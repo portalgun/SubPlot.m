@@ -1,276 +1,517 @@
-classdef SubPlot < handle
+classdef SubPlot < handle & ChildSetter & SubPlot_AxesL & SubPlot_Tests_
+
+%: special props
+%:   bZ
+%:   bYY
+%:
+%:  bXBy
+%:  bYCtr
 properties
-    WH
     f
-    bLockAxes=true
-
-    RC
     n
-    ctrs
-    text
 
-    %plotRatio=[1,1]
-    iMargin
-    oMargin
-    iUnits
-    oUnits
+    %- size
+    RC
+
+    %- shift
+    % XXX rename to rc?
+    xedge
+    yedge
+    yyedge
+    zedge
+
+    %- select (RO)
+    cur
+    i
     axis
 
-    % sup
-    supTxt
-    supLoc
-    supMargin
+    %- Figure
+    aspectR
+    bHold
+    bSelectAll=false
+    bLockAxes=true
+    bgColor
+    bZ % XXX
+    bYY
 
-    % sub
-    subTxt
-    subLoc
+    %- MARGIN
+    iUnits
+    oUnits
+
+    %- margin
+    iMargin
+    oMargin
+    %
     subMargin
-
-    % tile
-    bTitles
-    titles
-    titleMargin
-    titleFontSize
-
-    % rc labels
-    bRlabels
-    bClabels
-    rlabels
-    clabels
-    rNNewline
-    cNNewline
-    rlabelLoc='right'
-    clabelLoc='top'
-    clabelHA
-    rlabelHA
-    bRSup
-
-
-    % rc base labels
-    rlabelBase
-    clabelBase
-    titleBase
-    rlabelBasePos=[0.0,0.99]
-    clabelBasePos=[0.01, 0]
-    titleBasePos=[0.01, 0]
-    rlabelBaseHA
-    clabelBaseHA
-    titleBaseHA
-
-
-    % xy lables
-    titleByRow
-    xlabelByRow
-    ylabelByCol
-    xlabelCtrOnly
-    ylabelCtrOnly
-    xlabelXYEdge % where to begin counting for ctr
-    ylabelXYEdge
-
-    %yy labels
-    bYYlabels
-    yylabelCtrOnly
-    yylabelByCol
-    yylabelColor
-    yylabelXYEdge
-
-    ticksFontSize
+    supMargin
+    %
+    lMargin
+    rMargin
+    tMargin
+    bMargin
+    %
+    xMargin
+    yMargin
+    xxMargin
+    yyMargin
+    %
     xticksMargin
     yticksMargin
+    xxticksMargin
     yyticksMargin
+    zticksMargin
 
-    xlabelMargin
-    ylabelMargin
-    yylabelMargin
+    % XXX RM?
+    tBMargin % top or bottom
+    rBMargin % left or right
+    xxBMargin
+
+    %- Flag
+    bSupLabel
+    bSubLabel
+    %
+    bLLabel
+    bRLabel
+    bTLabel
+    bBLabel
+    %
+    bXLabel
+    bYLabel
+    bXXLabel
+    bYYLabel
+    bZLabel
+    %
+    bXTicks
+    bYTicks
+    bXXTicks
+    bYYTicks
+    bZTicks
+
+    %- By
+    % NOTE GENERAL IF OTHERS ARE EMPTY
+    bXBy
+    bYBy
+    bXXBy
+    bYYBy
+
+    bXTicksBy
+    bYTicksBy
+    bXXTicksBy
+    bYYTicksBy
+
+    %- bCtr
+    % NOTE GENERAL IF OTHERS ARE EMPTY
+    bXCtr
+    bYCtr
+    bXXCtr
+    bYYCtr
+
+    bXTicksCtr
+    bYTicksCtr
+    bXXTicksCtr
+    bYYTicksCtr
 
 
-    clabelMargin % top or bottom
-    rlabelMargin % left or right
-    clabelBaseMargin % top or bottom
-    rlabelBaseMargin % left or right
-    titleBaseMargin
+   %- plot axes properties
+    lineWidth
+    tickLength
+    fontSize
+    fontWeight
+    bBox
+    %
+    xScale
+    yScale
+    yyScale
+    zScale
+    %
+    xColor
+    yColor
+    yyColor
+    zColor
+    %
+    xDir
+    yDir
+    yyDir
+    zDir
+    %
+    ylims
+    yylims
+    xlims
+    zlims
+    clims
+    %
+    xticks
+    yticks
+    yyticks
+    zticks
+    cticks
+    %
+    xticklabels
+    yticklabels
+    yyticklabels
+    zticklabels
+    cticklabels
+
+    %- General/Fallback
+    SuFontSize
+    RCFontSize
+    XYFontSize
+    ticksFontSize
 
 
+end
+properties(SetObservable)
+    % TXT
+    supTxt
+    subTxt
+    %
+    rTxt %row/right
+    lTxt %left row
+    tTxt %ctr/col
+    bTxt
+    %
+    xTxt
+    yTxt
+    zTxt
+    xxTxt
+    yyTxt
+    %
+    lBTxt
+    rBTxt
+    tBTxt
+    bBTxt
 
+    % LOC
+    supLoc % top*
+    subLoc % bottom*
+    % others are intrinsic
+
+    % Color
+    yTxtyColor
+    yTxtColor
+
+    % fonts
     supFontSize
     subFontSize
-    RCFontSize
-    FontSize
-    XYFontSize
+    %
+    tFontSize
+    bFontSize
+    rFontSize
+    lFontSize
+    %
+    xFontSize
+    yFontSize
+    xxFontSize
+    yyFontSize
+    %
+    xticksFontSize
+    yticksFontSize
+    xxticksFontSize
+    yyticksFontSize
 
-    cur
-    bHold
+
+
 end
 properties(Hidden)
-    obsList
-    ax
+    bTest
+    initFlag=1
+    Rs
+    Cs
+    Ws
+    Hs
+
+
+    %- plot axes
     AX0
+    ax
+    axl % lines
+    axb % background
+    axib % innerbackground
+    axibp % innerbackground plot
+    bVisible
 
-    sTitl=struct('loc',[],'ax',[],'tbox',[]);
-    uTitl=struct('loc',[],'ax',[],'tbox',[]);
-
-    rTitl=struct('loc',[],'ax',[],'tbox',[]);
-    cTitl=struct('loc',[],'ax',[],'tbox',[]);
+    %- Label axes
     %tTitl=struct('loc',[],'ax',[],'tbox',[]); NOTE unused
 
-    tBTitl=struct('loc',[],'ax',[],'tbox',[],'txt','');
-    rBTitl=struct('loc',[],'ax',[],'tbox',[]);
-    cBTitl=struct('loc',[],'ax',[],'tbox',[]);
+    % converstions
+    fWH
+    paperWH
+    nCharWH_T
+    nLineWH_T
+    nPixWH_T
+    defFontSize
 
-    yTitl=struct('ax',[],'tbox',[]);
-    xTitl=struct('ax',[],'tbox',[]);
-    yyTitl=struct('ax',[],'tbox',[]);
+    % bFlags
+    bYY_
+    bZ_
+    bSuplabel_
+    bSublabel_
+    bLLabel_
+    bRLabel_
+    bTLabel_
+    bBLabel_
+    bYYLabel_
+    bXXLabel_
+    bXLabel_
+    bYLabel_
+    bXTicks_
+    bYTicks_
+    bYYTicks_
+    bXXTicks_
 
-    bInit=true
-    nPixWH
-    nCharWH
-    nCharWH_RC
-    nCharWH_RC_rev
-    nCharWH_rev
-
-    bCtrOnly
-    defFontSz
-
-    bSuptitle_
-    bSubtitle_
-    bTitle_
-    bRlabelBase_
-    bClabelBase_
-    bTitleBase_
-    bRlabel_
-    bClabel_
     titleBasePos_
 
-    i
-    c
-    r
-    h
-    w
+    % Dim info
+    D
 
-    % bFIRST
-    W0
-    H0
-    TW
-    TH
-    mwh
-    oMH
-    oMW
-    oML
-    oMT
+    % flds
+    flds
+    AFlds
+    revFlds
+    nRevFlds
+    topFlds
+    botFlds
+    rightFlds
+    leftFlds
 
-    % inner margins
+    bFlds
+    rFlds
+    lFlds
+    aFlds
+
+    bRev
+    bNRev
+    bLR
+    bBy
+    bInner
+
+    % Margins
+    oM0
+    iM0
+    iM0f
+    oM0f
+    iM0n
+    oM0n
     oM
     iM
-    fWH
 
-    ml
-    mr
-    mt
-    mb
+    m0
+    MC0
+    m  % length of padding pre-margin
+    MC % length of margin
+
+
+    % pos
+    Pos
+    pos
+    pos0
+    Pos0
+    %
+    %
+    oPosT
+    iPosT
+
+
+    % edges
+    WH
+    Edges
+    Ctrs
+
     aspectIdeal
-
+end
+properties(Hidden)
     bResize=0
-    bSelectAll=0
     bFirst=true
     % updateLegendMenuToolbar
 end
 properties(Constant)
     IMARGIN_NORM_DEF=[0.13 0.02 0.225 0.185]; % LRTB
-    %OMARGIN_NORM_DEF=[0.02 0.02 0.02 0.02]; % LRTB
     OMARGIN_NORM_DEF=[0.02 0.02 0.02 0.09]; % LRTB
 end
 methods(Static)
     function P=getP()
-        P={'iMargin',[],'';
-           'iUnits','normalized','ischar_e';
-           'iLM',[],'';
-           'iRM',[],'';
-           'iTM',[],'';
-           'iBM',[],'';
+        bB='Num.isBinary';
+        bBE='Num.isBinary_e';
+        bN='Num.is';
+        bNE='Num.is_e';
+        bCE='ischar_e';
+
+        P={...
+            %- FIGURE
+           'bTest',false,bBE;
+           'bYY',[],'';
+           'bZ',[],'';
+           'bHold',false,'';
+           'bgColor',[1 1 1],'';
+           'bSelectAll',false,'';
+           'bLockAxes',true,'';
+           %'aspectR',.75,bB;
+           'aspectR',1,bB;
+
+           'iUnits','char',bCE;
+           'oUnits','char',bCE;
+
+           %% - shift
+           'xedge', [1 1],bN;
+           'yedge', [1 1],bN;
+           'yyedge',[1 1],bN;
+
+           %% By
+           'bXBy',true,bB;
+           'bYBy',true,bB;
+           'bXXBy',true,bB;
+           'bYYBy',true,bB;
+           %
+           'bXTicksBy',[],bBE;
+           'bYTicksBy',[],bBE;
+           'bXXTicksBy',[],bBE;
+           'bYYTicksBy',[],bBE;
+
+           %% Ctr
+           'bXCtr',true,bB;
+           'bYCtr',true,bB;
+           'bXXCtr',true,bB;
+           'bYYCtr',true,bB;
+           %
+           'bXTicksCtr',[],bBE;
+           'bYTicksCtr',[],bBE;
+           'bXXTicksCtr',[],bBE;
+           'bYYTicksCtr',[],bBE;
+
+           %% - Margin
+           'iMargin',[],'';
            'oMargin',[],'';
-           'oUnits','normalized','ischar_e';
-           'oLM',[],'';
-           'oRM',[],'';
-           'oTM',[],'';
-           'oBM',[],'';
-           ...
-           'rlabels',[],'';
-           'clabels',[],'';
-           'rlabelHA','Center','ischar_e';
-           'clabelHA','Center','ischar_e';
-           'clabelLoc','top','ischar_e';
-           'rlabelLoc','right','ischar_e';
-           'rNNewline',0,'Num.is_e';
-           'cNNewline',0,'Num.is_e';
-           'bRSup',false,'Num.isBinary';
-           'RCFontSize',[],'';
-           ...
-           'xlabelByRow',true,'Num.isBinary';
-           'ylabelByCol',true,'Num.isBinary';
-           'titleByRow',true,'Num.isBinary';
-           'xlabelCtrOnly','true','Num.isBinary';
-           'ylabelCtrOnly','true','Num.isBinary';
-           'xlabelXYEdge',[1 1],'Num.is';
-           'ylabelXYEdge',[1 1],'Num.is';
-           ...
-           'bYYlabels',false,'Num.isBinary';
-           'yylabelByCol',true,'Num.isBinary';
-           'yylabelCtrOnly','true','Num.isBinary';
-           'yylabelColor',[0 0 0],'';
-           'yylabelXYEdge',[ 1  1],'Num.is';
-           'XYFontSize',[],'';
-           ...
-           'ticksFontSize',18,'';
-           ...
-           'rlabelBase','','ischar_e';
-           'clabelBase','','ischar_e';
-           'titleBase','','ischar_e';
-           'rlabelBasePos',[0.0,0.99],'Num.is_e';
-           'clabelBasePos',[0.01,0],'Num.is_e';
-           'titleBasePos',[0.01 0],'Num.is_e';
-           'rlabelBaseHA','left','ischar_e';
-           'clabelBaseHA','left','ischar_e';
-           'titleBaseHA','left','ischar_e';
-           'rlabelBaseMargin',0,'Num.is';
-           'clabelBaseMargin',0,'Num.is';
-           'titleBaseMargin',0,'Num.is';
-            ...
-           'xticksMargin',1,'Num.is';
-           'yticksMargin',1,'Num.is';
-           'yyticksMargin',1,'Num.is';
-           'xlabelMargin',1,'Num.is';
-           'ylabelMargin',1,'Num.is';
-           'yylabelMargin',1,'Num.is';
-           'rlabelMargin',1,'Num.is';
-           'clabelMargin',1,'Num.is';
-           'subMargin',1,'Num.is';
-           'supMargin',1,'Num.is';
-           'titleMargin',1,'Num.is';
-           ...
-           'supTxt','','';
-           'supLoc','top','';
+
+           'subMargin',1,bN;
+           'supMargin',1,bN;
+           %
+           'tMargin',1,bN;
+           'bMargin',1,bN;
+           'lMargin',1,bN;
+           'rMargin',1,bN;
+           %
+           'xMargin',1,bN;
+           'yMargin',1,bN;
+           'yyMargin',1,bN;
+           'xxMargin',1,bN;
+            %
+           'xticksMargin',1,bN;
+           'yticksMargin',1,bN;
+           'yyticksMargin',1,bN;
+
+
+           % RM?
+           'tBMargin',0,bN;
+           'rBMargin',0,bN;
+           'xxBMargin',0,bN;
+
+           %- Labels
+           %%  Flags
+           'bSupLabel',false,bB;
+           'bSubLabel',false,bB;
+           %
+           'bLLabel',[],bB;
+           'bRLabel',[],bB;
+           'bTLabel',[],bB;
+           'bBLabel',[],bB;
+           %
+           'bXLabel',[],bB;
+           'bYLabel',[],bB;
+           'bXXLabel',[],bB;
+           'bYYLabel',[],bB;
+           'bZLabel',[],bB;
+           %
+           'bXTicks',true,bB;
+           'bYTicks',true,bB;
+           'bXXTicks',[],bB;
+           'bYYTicks',[],bB;
+
+           %% txt
+           'supTxt',[],'';
+           'subTxt',[],'';
+           %
+           'lTxt' ,[],'';
+           'rTxt' ,[],'';
+           'tTxt' ,[],'';
+           'bTxt' ,[],'';
+           %
+           'xTxt' ,[],'';
+           'yTxt' ,[],'';
+           'xxTxt',[],'';
+           'yyTxt',[],'';
+
+           %% base txt
+           'lBTxt',[],'';
+           'rBTxt',[],'';
+           'tBTxt',[],'';
+           'bBTxt',[],'';
+
+           %% fontsize
            'supFontSize',[],'';
-           ...
-           'subTxt','','';
-           'subLoc','bottom','';
            'subFontSize',[],'';
-           ...
-           'bTitles',false,'';
-           'bRlabels',false,'';
-           'bClabels',false,'';
-           'titles',[],'';
-           'titleFontSize',[],'';
-           ...
-           'FontSize',22,'';
-           ...
-           'axis','','ischar';
-           'bHold',false','';
-           'bLockAxes',true','';
+           'tFontSize',[],'';
+           'bFontSize',[],'';
+           'lFontSize',[],'';
+           'rFontSize',[],'';
+           'xFontSize',[],'';
+           'yFontSize',[],'';
+
+           %% fallback fontsizes
+           'SuFontSize',40,'';
+           'RCFontSize',22,'';
+           'XYFontSize',22,'';
+           'ticksFontSize',18,'';
+
+           %% txt loc
+           'supLoc','top','';
+           'subLoc','bottom','';
+
+           %- plot axes
+           'lineWidth',2,'';
+           'tickLength',[0.03, 0.02],'';
+           'fontSize',18,'';
+           'fontWeight','normal','';
+           'bBox',true,'';
+           %
+           'xScale','linear','';
+           'yScale','linear','';
+           'yyScale','linear','';
+           'zScale','linear','';
+           %
+           'xColor',  [0 0 0],'';
+           'yColor',  [0 0 0],'';
+           'yyColor', [0 0 0],'';
+           'zColor',  [0 0 0],'';
+           %
+           'xDir', 'normal','';
+           'yDir', 'normal','';
+           'yyDir', 'normal','';
+           'zDir', 'normal','';
+           %
+           'ylims',[],'';
+           'yylims',[],'';
+           'xlims',[],'';
+           'zlims',[],'';
+           'clims',[],'';
+           %
+           'yticks',[],'';
+           'yyticks',[],'';
+           'xticks',[],'';
+           'zticks',[],'';
+           'cticks',[],'';
+           %
+           'yticklabels',[],'';
+           'yyticklabels',[],'';
+           'xticklabels',[],'';
+           'zticklabels',[],'';
+           'cticklabels',[],'';
+
         };
     end
 end
 methods
     function obj=SubPlot(varargin)
+        obj.get_flds();
         if nargin < 1 || isempty(varargin{1})
             return
         end
@@ -281,119 +522,403 @@ methods
         N=varargin(ind);
         varargin(ind)=[];
 
+
         if nums(1)==2
-            obj.RC=[N{1}];
-            N(1)=[];
+            RC=[N{1}];
+            %N(1)=[];
         elseif n > 1
-            obj.RC=N{1:2};
-            N(1:2)=[];
+            RC=N{1:2};
+            %N(1:2)=[];
         end
+
         obj.parse(varargin{:});
-        obj.n=prod(obj.RC);
-        obj.ax=cell(obj.n,1);
-        obj.text=cell(obj.n,1);
-        obj.ctrs=cell(obj.n,1);
-        if ~isempty(N)
-            obj.select(N{:});
+        obj.init(RC);
+        assignin('base','SP',obj);
+    end
+    function init(obj,RC)
+        if nargin < 2 || isempty(RC)
+            RC=obj.RC;
         end
+
+        % figure
         obj.f=gcf;
         if ~obj.bHold
             clf;
         end
-        set(obj.f,'SizeChangedFcn',@obj.resize);
-        obj.get_conversions();
-        assignin('base','SP',obj);
+        set(obj.f,'SizeChangedFcn',@obj.resize_);
 
-
+        % hidden main axis
         obj.AX0=gca;
         axis off;
 
+        % all other axes
+        obj.RC=RC;
+
+        %obj.fitWin();
+    end
+    function init_children(obj)
+        obj.get_dimInfo();
+        obj.get_geometry();
+
+        obj.set_background();
+        if obj.bTest
+            obj.set_ibackground();
+        end
+        obj.init_axes();
+        obj.init_AL();
+    end
+    function set.RC(obj,val)
+        obj.RC=val;
+        obj.n=prod(obj.RC);
+        [obj.Rs,obj.Cs]=ind2sub(obj.RC,(1:obj.n)');
+
+        obj.Hs=ones(obj.n,1);
+        obj.Ws=ones(obj.n,1);
+
+        obj.init_children();
+    end
+    function get_dimInfo(obj)
+        [n,m]=ind2sub(obj.RC,(1:obj.n)');
+        curs=[n,m];
+        z=zeros(obj.RC);
+        o=ones(obj.RC);
+        bXBy=z;
+        bYBy=z;
+        bYYBy=z;
+        [X,Y]=meshgrid(1:obj.RC(2),1:obj.RC(1));
+
+
+        xedge=obj.xedge;
+        yedge=obj.yedge;
+        yyedge=obj.yyedge;
+
+        % By
+        bXBy(xedge(2),:)=true;
+        bYBy(:,yedge(1))=true;
+        bYYBy(:,yyedge(1))=true;
+        bXBy=bXBy & (X >= obj.xedge(1));
+        bYBy=bYBy & (Y >= obj.yedge(2));
+        bYYBy=bYYBy & (Y >= obj.yyedge(2));
+        bXBy=flipud(bXBy);
+        bYYBy=fliplr(bYYBy);
+
+        % Ctr
+        bYCtr=Y==ceil(obj.RC(1)/2);
+        bXCtr=X==ceil(obj.RC(2)/2);
+        bYYCtr=Y==ceil(obj.RC(1)/2);
+
+
+        obj.D=struct();
+        %obj.D.bX=bX;
+        %obj.D.nX=nX;
+        %obj.D.bY=bY;
+        %obj.D.nY=nY;
+
+        bXBy_ =obj.get_bBy('x');
+        bYBy_ =obj.get_bBy('y');
+        bYYBy_ =obj.get_bBy('yy');
+        %
+        bXTBy_=obj.get_bBy('xticks');
+        bYTBy_=obj.get_bBy('yticks');
+        bYYTBy_=obj.get_bBy('yyticks');
+
+        bXCtr_ =obj.get_bCtr('x');
+        bYCtr_ =obj.get_bCtr('y');
+        bYYCtr_ =obj.get_bCtr('yy');
+        %
+        bXTCtr_=obj.get_bCtr('xticks');
+        bYTCtr_=obj.get_bCtr('yticks');
+        bYYTCtr_=obj.get_bCtr('yyticks');
+
+        obj.D.bXBy =bXBy  | (~bXBy_*o);
+        obj.D.bYBy =bYBy  | (~bYBy_*o);
+        obj.D.bYYBy =bYYBy  | (~bYYBy_*o);
+        %
+        obj.D.bXCtr=bXCtr | (~bXCtr_*o);
+        obj.D.bYCtr=bYCtr | (~bYCtr_*o);
+        obj.D.bYYCtr=bYYCtr | (~bYYCtr_*o);
+
+        obj.D.bXTicksBy =bXBy  | (~bXTBy_*o);
+        obj.D.bYTicksBy =bYBy  | (~bYTBy_*o);
+        obj.D.bYYTicksBy =bYYBy  | (~bYYTBy_*o);
+        %
+        obj.D.bXTicksCtr=bXCtr | (~bXTCtr_*o);
+        obj.D.bYTicksCtr=bYCtr | (~bYTCtr_*o);
+        obj.D.bYYTicksCtr=bYYCtr | (~bYYTCtr_*o);
+
+        obj.D.bX=obj.D.bXBy & obj.D.bXCtr;
+        obj.D.bY=obj.D.bYBy & obj.D.bYCtr;
+        obj.D.bYY=obj.D.bYYBy & obj.D.bYYCtr;
+        %
+        obj.D.bXTicks=obj.D.bXTicksBy & obj.D.bXTicksCtr;
+        obj.D.bYTicks=obj.D.bYTicksBy & obj.D.bYTicksCtr;
+        obj.D.bYYTicks=obj.D.bYYTicksBy & obj.D.bYYTicksCtr;
+
+        obj.D.bX_=bXBy_ || bXCtr_;
+        obj.D.bY_=bYBy_ || bYCtr_;
+        obj.D.bYY_=bYYBy_ || bYYCtr_;
+        %
+        obj.D.bXTicks_=bXTBy_ || bXTCtr_;
+        obj.D.bYTicks_=bYTBy_ || bYTCtr_;
+        obj.D.bYYTicks_=bYYTBy_ || bYYTCtr_;
+
+        r=mod(obj.RC,2)==0;
+        obj.D.bYEven=r(1)  & bYCtr_;
+        obj.D.bYYEven=r(1) & bYYCtr_;
+        obj.D.bXEven=r(2)  & bXCtr_;
+
+        obj.D.bYTicksEven=r(1)  & bYTCtr_;
+        obj.D.bYYTicksEven=r(1) & bYYTCtr_;
+        obj.D.bXTicksEven=r(2)  & bXTCtr_;
+
+        % TODO YY
+        %D.bYYBy=bYYBy;
+    end
+end
+methods(Access=protected)
+    function get_geometry(obj)
+
+        % init
+        obj.get_conversions();
         obj.get_margins();
-        obj.bFirst=true;
-        for r=1:obj.RC(1)
-        for c=1:obj.RC(2)
-            obj.cur=[r c];
-            obj.i=sub2ind(obj.RC,r,c);
-            obj.get_crwh(r,c,1,1);
-            cl2=tmpSet(obj,'bFirst',false);
+
+        obj.get_positions();
+        obj.get_WHs();
+        obj.get_edges();
+        obj.get_ctrs();
+    end
+    function init_axes(obj);
+        obj.ax=cell(obj.n,1);
+        obj.bVisible=false(obj.n,1);
+        bYY_=obj.bYY_;
+        bZ_=obj.bZ_;
+
+        % main axes
+        if obj.bZ_
+            args={...
+                  'ZDir',obj.zDir,...
+                  'ZScale',obj.zScale,...
+                  'ZColor',obj.zColor ...
+            };
+        else
+            args={};
         end
+        yyargs={};
+
+        % LIMS
+        if ~isempty(obj.ylims)
+            args=['YLim',obj.ylims,'YLimMode','manual'];
+        end
+        if ~isempty(obj.xlims)
+            args=['XLim',obj.zlims,'XLimMode','manual'];
+        end
+        if ~isempty(obj.zlims)
+            args=['ZLim',obj.zlims,'ZLimMode','manual'];
+        end
+
+        % TICKS
+        if ~isempty(obj.yticks)
+            args=['YTick',obj.yticks,'YTickMode','manual'];
+            yBlnk=repmat({''},1,numel(obj.yticks));
+            yt=cellfun(@num2str,num2cell(obj.yticks));
+        else
+            yt=obj.yticklabels;
+        end
+        if ~isempty(obj.xticks)
+            args=['XTick',obj.xticks,'XTickMode','manual'];
+            xBlnk=repmat({''},1,numel(obj.xticks));
+            xt=cellfun(@num2str,num2cell(obj.xticks));
+        else
+            xt=obj.xticklabels;
+        end
+
+        if ~isempty(obj.zticks)
+            args=['ZTick',obj.zticks,'ZTickMode','manual'];
+            zBlnk=repmat({''},1,numel(obj.zticks));
+            zt=cellfun(@num2str,num2cell(obj.zticks));
+        elseif obj.bZ_
+            zt=obj.zticklabels;
+        else
+            zt=[];
+        end
+
+        yyargs={};
+        if ~isempty(obj.yyticks)
+            yyargs=['YTick',obj.yyticks,'YTickMode','manual'];
+            yyBlnk=repmat({''},1,numel(obj.yyticks));
+            yyt=cellfun(@num2str,num2cell(obj.yyticks));
+        elseif bYY_
+            yyt=obj.yyticklabels;
+        else
+            yyt=[];
+        end
+
+        % XXX
+        % xtick/ytick
+        % yticklabels/yticklabels
+        % callback
+
+
+        bY=obj.get_b('yticks');
+        bX=obj.get_b('Xticks');
+        bYY=obj.get_b('yyticks');
+        D=obj.D;
+
+        for i = 1:obj.n
+
+            %% left
+            sargs={};
+            % yticklabels
+            if D.bYTicks_ && D.bYTicks(i)
+                if ~isempty(yt)
+                    sargs=[sargs,'YTickLabelMode','manual','YTickLabel',yt];
+                end
+                if D.bYTicksEven
+                end
+            elseif D.bYTicks_
+                sargs=[sargs,'YTickLabelMode','manual','YTickLabel',{[]}];
+            end
+            % xticklabels
+            if D.bXTicks_ && D.bXTicks(i)
+                if ~isempty(xt)
+                    sargs=[sargs,'XTickLabelMode','manual','XTickLabel',xt];
+                end
+                if D.bXTicksEven
+                end
+            elseif D.bXTicks_
+                sargs=[sargs,'XTickLabelMode','manual','XTickLabel',{[]}];
+            end
+
+
+            obj.ax{i}=axes(...
+                           'Units','normalized',...
+                           'Position',obj.Pos.i(i,:),...
+                           'LineWidth',obj.lineWidth,...
+                           'TickLength',obj.tickLength,...
+                           'FontSize',obj.ticksFontSize,...
+                           'FontWeight',obj.fontWeight,...
+                           'XScale',obj.xScale,...
+                           'YScale',obj.yScale,...
+                           'XColor',obj.xColor,...
+                           'YColor',obj.yColor,...
+                           'Box',obj.logical2onoff(obj.bBox),...
+                           ...
+                           'Visible',obj.logical2onoff(obj.bSelectAll),...
+                           'NextPlot','replaceChildren',...
+                           args{:}, ...
+                           sargs{:}...
+            );
+            %enableDefaultInteractivity(obj.ax{i});
+
+            %% right
+            if ~bYY
+                continue;
+            end
+            sargs={};
+
+            if D.bYYTicks_ && D.bYYTicks(i)
+                if ~isempty(yyt)
+                    sargs=[sargs,'YTickLabelMode','manual','YTickLabel',yyt];
+                end
+                if D.bYYTicksEven
+                end
+            elseif D.bYYTicks_
+                sargs=[sargs 'YTickLabelMode','manual','YTickLabel',{[]}];
+            end
+
+            yyaxis('right');
+            obj.ax{i}.YScale=obj.yyScale;
+            obj.ax{i}.YColor=obj.yyColor;
+            obj.ax{i}.YDir=obj.yyDir;
+            if ~isempty(yyargs) || ~isempty(sargs)
+                set(obj.ax{i},yyargs{:},sargs{:});
+            end
+            yyaxis('left');
+            obj.ax{i}.YColor=obj.yColor;
         end
     end
-%- SET GET
-    % sub/sup
-    function out=get.bSuptitle_(obj)
-        out=~isempty(obj.supTxt);
+    function set_background(obj)
+        pos=obj.Pos.oT;
+        if Axis.isInvalid(obj.axb)
+            if isempty(obj.bgColor)
+                bgColor='none';
+                bbox='off';
+            else
+                bgColor=obj.bgColor;
+                bbox='on';
+            end
+            obj.axb=axes(...
+                'Units','normalized',...
+                'Position',pos,...
+                'Visible','on',...
+                'YColor','none',...
+                'XColor','none',...
+                'YTick',[],...
+                'XTick',[],...
+                'Color',bgColor,...
+                'Box',bbox...
+            );
+        else
+            set(obj.axb,'Position',pos);
+        end
     end
-    function out=get.bSubtitle_(obj)
-        out=~isempty(obj.subTxt);
-    end
-    % rct
-    function out=get.bTitle_(obj)
-        out=~isempty(obj.titles)  || obj.bTitles;
-    end
-    function out=get.bRlabel_(obj)
-        out=~isempty(obj.rlabels) || obj.bRlabels || obj.bRlabelBase_;
-    end
-    function out=get.bClabel_(obj)
-        out=~isempty(obj.clabels) || obj.bClabels || obj.bClabelBase_;
-    end
-    % rct base
-    function out=get.bTitleBase_(obj)
-        out=~isempty(obj.titleBase);
-    end
-    function out=get.bRlabelBase_(obj)
-        out=~isempty(obj.rlabelBase);
-    end
-    function out=get.bClabelBase_(obj)
-        out=~isempty(obj.clabelBase);
-    end
-    function out=get.titleBasePos_(obj)
-        if ~isempty(obj.titleBasePos)
-            out=obj.titleBasePos;
-            return
+    function set_ibackground(obj)
+        pos=obj.Pos.iT;
+        if Axis.isInvalid(obj.axib)
+            obj.axib=axes(...
+                'Units','normalized',...
+                'Position',pos,...
+                'Visible','on',...
+                'YTick',[],...
+                'XTick',[],...
+                'Color','green',...
+                'Box','on'...
+            );
+        else
+            set(obj.axib,'Position',pos);
+        end
+
+        pos=obj.Pos.iTp;
+        if Axis.isInvalid(obj.axibp)
+            obj.axibp=axes(...
+                'Units','normalized',...
+                'Position',pos,...
+                'Visible','on',...
+                'YTick',[],...
+                'XTick',[],...
+                'Color','red',...
+                'Box','on'...
+            );
+        else
+            set(obj.axibp,'Position',pos);
         end
 
     end
-    %
-    function set.titles(obj,txt)
-        if ~iscell(obj.titles)
-            obj.titles=cell(1,obj.RC(1));
-        end
-        if iscell(txt)
-            obj.titles=txt;
+    function set_linesd(obj);
+        ind=sub2ind(obj.RC,obj.RC(end,1),1);
+        pos=obj.Pos.o(ind,:);
+        if isempty(obj.axl)
+            obj.axl{1}=axes(...
+                'Units','normalized',...
+                'Position',pos,...
+                'Visible','on'...
+            )
         else
-            obj.titles{obj.cur(1)}=txt;
-        end
-    end
-    function set.rlabels(obj,txt)
-        if ~iscell(obj.rlabels)
-            obj.rlabels=cell(1,obj.RC(1));
-        end
-        if iscell(txt)
-            obj.rlabels=txt;
-        else
-            obj.rlabels{obj.cur(1)}=txt;
-        end
-    end
-    function set.clabels(obj,txt)
-        if ~iscell(obj.clabels)
-            obj.clabels=cell(1,obj.RC(2));
-        end
-        if iscell(txt)
-            obj.clabels=txt;
-        else
-            obj.clabels{obj.cur(2)}=txt;
+            set(obj.axl{1},'Position',pos);
         end
     end
 end
 %- PARSE
 methods(Hidden)
     function parse(obj,varargin)
+
         P=obj.getP();
         Opts=Args.simple([],P,varargin{:});
         obj.bHold=Opts.bHold;
         Opts=rmfield(Opts,'bHold');
 
+        %% MARGINS
+        % iunits
         def=cell(2,1);
         switch Opts.iUnits
             case {'normalized','norm','normal'}
@@ -401,18 +926,16 @@ methods(Hidden)
                 def{1}=obj.IMARGIN_NORM_DEF;
             case {'characters','char'}
                 Opts.iUnits='characters';
-                def{1}=repmat(Opts.FontSize,1,4);
+                def{1}=repmat(obj.fontSize,1,4);
         end
-
         switch Opts.oUnits
             case {'normalized','norm','normal'}
                 Opts.oUnits='normalized';
                 def{2}=obj.OMARGIN_NORM_DEF;
             case {'characters','char'}
                 Opts.oUnits='characters';
-                def{2}=[2 1 1 2];
+                def{2}=[0 0 0 0];
         end
-
         flds={'iMargin','oMargin'};
         for i = 1:length(flds)
             fld=flds{i};
@@ -426,60 +949,41 @@ methods(Hidden)
             end
         end
 
-        flds={ ...
-            'iLM','iMargin',1;
-            'iRM','iMargin',2;
-            'iTM','iMargin',3;
-            'iBM','iMargin',4;
-            'oLM','oMargin',1;
-            'oRM','oMargin',2;
-            'oTM','oMargin',3;
-            'oBM','oMargin',4;
-        };
-        for i = 1:size(flds,1)
-            fld=flds{i,1};
-            if ~isempty(Opts.(fld))
-                Opts.(flds{i,2})(flds{i,3})=Opts.(fld);
-            end
-        end
-        Opts=rmfield(Opts,flds(:,1));
-
-        flds={'rlabels','clabels','rlabelBase','clabelBase','titles','supTxt',};
-        for i =1:length(flds)
-            fld=flds{i};
-            if ~isempty(Opts.(fld))
-                obj.(fld)=Opts.(fld);
-            end
-        end
-        Opts=rmfield(Opts,flds);
-
         flds=fieldnames(Opts);
         for i =1 :length(flds)
             fld=flds{i};
             val=Opts.(fld);
-            if endsWith(fld,'FontSize') && isempty(val)
-                val=obj.FontSize;
+            if isempty(val)
+                continue
             end
             obj.(fld)=val;
         end
-
-        obj.bInit=false;
     end
 end
 methods
-%- select
+%- GETTERS
+    function out=get.bYY_(obj)
+        if ~isempty(obj.bYY)
+            out=obj.bYY;
+        else
+            out=obj.get_b('yy') || obj.get_b('yyticks');
+        end
+    end
+    function out=get.bZ_(obj)
+        % XXX
+        % need also to create z lable properties
+        out=false; % XXX
+
+        if ~isempty(obj.bZ)
+            out=obj.bZ;
+        else
+            out=obj.get_b('z') || obj.get_b('zticks');
+        end
+    end
     function sel(obj,varargin)
         obj.select(varargin{:});
     end
-    function obj=selectAll(obj)
-        obj.bSelectAll=false;
-        cl=tmpSet(obj,'bSelectAll',true);
-        obj.bFirst=true;
-        for i = 1:obj.n
-            obj.select(i);
-            cl2=tmpSet(obj,'bFirst',false);
-        end
-    end
+%- select
     function obj=next(obj)
         if isempty(obj.cur)
             cur=[1,1];
@@ -491,7 +995,7 @@ methods
             error('exceeded n')
         end
         [n,m]=ind2sub(obj.RC,ind);
-        obj.sel(n,m);
+        obj.select(n,m);
     end
     function obj=select(obj,varargin)
         if length(varargin{1})==1 && (length(varargin)==1 || ~isnumeric(varargin{2}))
@@ -520,553 +1024,679 @@ methods
                 w=varargin{2}(1);
             end
         else
+            h=[];
+            w=[];
+        end
+        obj.select_(r,c,h,w,true);
+    end
+    function select_(obj,r,c,h,w,bPub)
+        if nargin < 4 || isempty(h)
             h=1;
+        end
+        if nargin < 5 || isempty(w)
             w=1;
+        end
+        if nargin < 6 || isempty(bPub)
+            bPub=false;
         end
 
         obj.cur=[r c];
         obj.i=sub2ind(obj.RC,r,c);
 
-        %if ~obj.bResize
-        %    obj.get_margins();
-        %    obj.fWH=obj.f.Position(3:4);
-        %end
-        obj.get_crwh(r,c,h,w);
-        obj.set_sub_pos();
+        obj.axis=obj.ax{obj.i};
+        if  bPub
+            set(obj.f,'CurrentAxes',obj.axis); % XXX SLOW 2
+        end
+        if ~obj.bVisible(obj.i)
+            set(obj.axis,'Visible','on');
+        end
+    end
+    function draw(obj)
+        for i = 1:obj.n
+            set(obj.ax{i},'Visible','on');
+            obj.bVisible=true;
+        end
     end
 end
 methods(Access=protected)
 %- Postition
     function get_conversions(obj)
-        %set(obj.f,'Units','normalized');
-        %posNorm=get(obj.f,'Position');
-        posNorm=[1 1 1 1];
+        fld='Position';
 
+        set(obj.f,'Units','normalized');
+        obj.fWH=obj.f.(fld)(3:4);
 
-        cl=tmpSet(obj.f,'Units','normalized');
-        obj.fWH=obj.f.Position(3:4);
+        obj.paperWH=obj.f.OuterPosition(3:4);
 
-        set(obj.f,'Units','characters');
-        posChar=obj.f.Position(3:4);
-
-        def=get(groot,'defaultuicontrolFontSize');
-        obj.defFontSz=def;
+        %fld='Position';
+        tmpSet(obj.f,'Units','characters');
+        nCharW=obj.f.(fld)(3); % width in char widht, height in line width
+        nLineH=obj.f.(fld)(4);
 
         set(obj.f,'Units','pixels');
-        obj.nPixWH=obj.f.Position(3:4);
+        obj.nPixWH_T=obj.f.(fld)(3:4);
 
-        obj.nCharWH   =(posChar.*def./obj.FontSize);
-        obj.nCharWH_RC=(posChar.*def./obj.RCFontSize);
-        obj.nCharWH_RC_rev=obj.nPixWH.*fliplr(obj.nCharWH_RC./obj.nPixWH);
-        obj.nCharWH_rev=obj.nPixWH.*fliplr(obj.nCharWH./obj.nPixWH);
+        obj.defFontSize=get(groot,'defaultuicontrolFontSize');
+
+        pixPerChar=obj.nPixWH_T(1)./nCharW;
+        pixPerLine=obj.nPixWH_T(2)./nLineH;
+        nCharH=obj.nPixWH_T(2)./pixPerChar;
+        nLineW=obj.nPixWH_T(1)./pixPerLine;
+        obj.nLineWH_T=[nLineW nLineH];
+        obj.nCharWH_T=[nCharW nCharH];
+
+        %obj.nCharWH   =(charWH.* obj.defFontSize./obj.fontSize);
+        %obj.nCharWH   =([1 1] ./ obj.defFontSize);
+        %obj.nCharWH_rev=obj.nPixWH.*fliplr(obj.nCharWH_RC./obj.nPixWH);
 
     end
-    function set_sub_pos(obj)
+    function get_positions(obj)
+        obj.normalize_margins();
 
-        i=obj.i;
-        v=[obj.c(i),obj.r(i),obj.w(i),obj.h(i)];
+        aP=obj.paperWH(1)/obj.paperWH(2);
+        aF=obj.fWH(1)./obj.fWH(2);
+        %R=aP./aF*obj.aspectR;
+        R=obj.aspectR*0.84;
+        %R=obj.aspectR;
 
-        if Axis.isInvalid(obj.ax{i})
-            obj.ax{i}=axes(...
-                'Units','normalized',...
-                'Position',v...
-            );
-            enableDefaultInteractivity(obj.ax{i});
-        else
-            % ACTUAL SELECT
-            if ~obj.bSelectAll && ~obj.bResize
-                set(obj.f,'CurrentAxes',obj.ax{i}); % XXX SLOW 2
-            end
-            if obj.bResize
-                set(obj.ax{i},'Position',v); % XXX SLOW
-            else
-                set(obj.ax{i},'Units','normalized','Position',v); % XXX SLOW
-            end
+        fWH=obj.fWH;
+
+        P=struct();
+        [P.i,P.o,P.iT,P.oT,P.iTm]=obj.get_crwh0(obj.RC, obj.Rs,obj.Cs, obj.oM,obj.iM, fWH,R);
+
+        oMN=obj.get_marginN('oM');
+        P.iTp=P.iT;
+        P.iT(1)=P.iT(1)+oMN(1);
+        P.iT(2)=P.iT(2)+oMN(4);
+        obj.Pos=P;
+
+        iFWH=fWH.*obj.Pos.iT(3:4);
+        obj.aspectIdeal=iFWH(1)/iFWH(2);
+
+
+    end
+    function get_WHs(obj)
+        WH=struct();
+        P=obj.Pos;
+        WH.iC=unique(P.i(:,3),'stable');
+        WH.iR=unique(P.i(:,4),'stable');
+        WH.oC=unique(P.o(:,3),'stable');
+        WH.oR=unique(P.o(:,4),'stable');
+        WH.oCT=P.oT(3);
+        WH.oRT=P.oT(4);
+
+        obj.WH=WH;
+    end
+    function get_edges(obj)
+        E=struct();
+        P=obj.Pos;
+        E.i=pos2edges(P.i);
+        E.o=pos2edges(P.o);
+        E.iT=pos2edges(P.iT);
+        E.iTp=pos2edges(P.iT);
+        E.oT=pos2edges(P.oT);
+        E.iTm=pos2edges(P.iTm);
+
+        obj.Edges=E;
+        function edges=pos2edges(Pos)
+            edges=[Pos(:,1) Pos(:,1)+Pos(:,3) Pos(:,2)+Pos(:,4) Pos(:,2)];
         end
-
     end
-    function get_crwh(obj,r,c,HH,WW)
+    function get_ctrs(obj)
+        E=obj.Edges;
+        C=struct();
+
+        % ctrs
+        C.i = edge2ctr(E.i);
+        C.o = edge2ctr(E.o);
+
+        C.iC=unique(C.i(:,1),'stable');
+        C.iR=unique(C.i(:,2),'stable');
+        C.oC=unique(C.o(:,1),'stable');
+        C.oR=unique(C.o(:,2),'stable');
+
+        C.iT=edge2ctr(E.iT);
+        C.oT=edge2ctr(E.oT);
+        C.iTm=edge2ctr(E.iTm);
+
+        C.iCT=C.iT(1);
+        C.iRT=C.iT(2);
+        C.oCT=C.oT(1);
+        C.oRT=C.oT(2);
+        C.iCTm=C.iTm(1);
+        C.iRTm=C.iTm(2);
+
+        obj.Ctrs=C;
+
+
+        function out=edge2ctr(edge)
+            out=[mean(edge(:,1:2),2) mean(edge(:,3:4),2)];
+        end
+    end
+    function [pos,Pos,iPosT,oPosT,iPosTm]=get_crwh0(obj,RC,ir,ic,oM,iM,fWH,aspectR)
+        bRelInner=false;
+
         %i=sub2ind([obj.RC(2) obj.RC(1)],c,r);
-        if obj.bFirst
-            obj.oMW=sum(obj.oM(1:2));
-            obj.oMH=sum(obj.oM(3:4));
-            obj.oML=obj.oM(1);
-            obj.oMT=obj.oM(3);
+        oMW=sum(oM(1:2));
+        oMH=sum(oM(3:4));
+        sz=size(ir);
 
-            % raw size of outer and inner
-            [W0,H0,C0,R0]  =outer_fun(obj,1,1,WW,HH);
-            [w0,h0,~,~,mwh]=inner_fun(obj,W0,H0,C0,R0);
-            obj.mwh=mwh;
+        % 1 is the wdith and height here
+        WW=1/RC(2);
+        HH=1/RC(1);
 
-            % resize inner to fit aspect ratio
-            [rW,rH]=ratio_fun(w0,h0);
-            w = w0*rW;
-            h = h0*rH;
+        %% 0
+        % OUTER
+        W0=(1-oMW) * WW;
+        H0=(1-oMH) * HH;
 
-            % resize both outer and inner to f
-            TW=(w+sum(mwh(1:2)))*obj.RC(2)/WW + obj.oMW;
-            TH=(h+sum(mwh(3:4)))*obj.RC(1)/HH + obj.oMH;
-            bH=TH > TW;
-            if bH
-                TW=TW./TH;
-                TH=1;
-            else
-                TH=TH./TW;
-                TW=1;
-            end
-            obj.TW=TW;
-            obj.TH=TH;
-            obj.W0=(TW-obj.oMW) * WW/obj.RC(2);
-            obj.H0=(TH-obj.oMH) * HH/obj.RC(1);
+        % INNER
+        if bRelInner
+            im0=iM.*[W0 W0 H0 H0];
         else
-            mwh=obj.mwh;
+            im0=iM;
+        end
+        iw=sum(im0(:,1:2),2);
+        ih=sum(im0(:,3:4),2);
+        w0=W0 - iw;
+        h0=H0 - ih;
+
+        % resize inner to fit aspect ratio
+        [rW0,rH0]=ratio_fun(fWH,RC,w0,h0,aspectR);
+        w01 = w0*rW0;
+        h01 = h0*rH0;
+
+        % GET TOTAL, WITHOUT EXTRA FIGURE SPACE
+        % (inner + innerMargin) * N + outerMargin
+        TW=(w01 + sum(im0(:,1:2),2)) .* 1./WW + oMW;
+        TH=(h01 + sum(im0(:,3:4),2)) .* 1./HH + oMH;
+        if TH(1) > TW(1);
+            TW=TW./TH;
+            TH=1;
+        else
+            TH=TH./TW;
+            TW=1;
         end
 
-        C0=  (  (c-1)*obj.W0 + obj.oML);
-        R0=1-(  (r-1)*obj.H0 + obj.oMT);
-        [w0,h0,c0,r0]=inner_fun(obj,obj.W0,obj.H0,C0,R0);
-        [rW,rH]=ratio_fun(w0,h0);
-        w = w0*rW;
-        h = h0*rH;
+        %% 1
+        % OUTER WITH NEW TOTAL
+        W=(TW-oMW) .* WW;
+        H=(TH-oMH) .* HH;
+        C=  (  (ic-1).*W + oM(1));
+        R=  (  (ir-1).*H + oM(4));
+
+        % INNER WIT NEW TOTAL
+        if bRelInner
+            im=iM.*[W W H H];
+        else
+            im=iM;
+        end
+        iw=sum(im(:,1:2),2);
+        ih=sum(im(:,3:4),2);
+        il=im(:,1);
+        ir=im(:,2);
+        it=im(:,3);
+        ib=im(:,4);
+        w1=W - iw;
+        h1=H - ih;
+        r1=R - ib;
+        c1=C - il;
+
+        % resize to fit aspect ratio
+        [rW,rH]=ratio_fun(fWH,RC,w1,h1,aspectR);
+        w = w1*rW;
+        h = h1*rH;
+
+        % NEEDED ???
+        TW=(w + iw) .* 1./WW + oMW;
+        TH=(h + ih) .* 1./HH + oMH;
+        if TH(1) > TW(1);
+            TW=TW./TH;
+            TH=1;
+        else
+            TH=TH./TW;
+            TW=1;
+        end
 
         % size of each inner, after resizing
-        rr = r0-(r-1)*abs(h-h0) - (h+mwh(4));
-        cc = c0-(c-1)*abs(w-w0);
-
-        % ideal aspect ratio
-        if obj.bFirst
-            if bH
-                TH=1;
-                TW=(w+sum(mwh(1:2)))*obj.RC(2)/WW + obj.oMW;
-            else
-                TH=(h+sum(mwh(3:4)))*obj.RC(1)/HH + obj.oMH;
-                TW=1;
-            end
-            iFWH=obj.fWH.*[TW TH];
-            obj.aspectIdeal=iFWH(1)/iFWH(2);
+        r = r1-(ir-1).*abs(h-h1)+ib*2;
+        c = c1-(ic-1).*abs(w-w1)+il*2;
 
 
-            obj.ml=mwh(1);
-            obj.mr=mwh(2);
-            obj.mt=mwh(3);
-            obj.mb=mwh(4);
-        end
+        %a= h + im(:,4);
+        %A= H;
 
-        i=obj.i;
-        obj.r(i) = rr;
-        obj.c(i) = cc;
-        obj.w(i) = w;
-        obj.h(i) = h;
+        % get rid of mysterious space ???
+        r=flipud(r+1-TH);
 
+        R=flipud(R+1-TH);
 
-        obj.ctrs{i}=[rr+h/2 cc+w/2];
+        %% SAVE
+        pos=[c  r repmat(w,sz) repmat(h,sz)];
+        Pos=[C  R repmat(W,sz) repmat(H,sz)];
 
-        function [W,H,C,R]=outer_fun(obj,TW,TH,WW,HH)
-            W=(TW-obj.oMW) * WW/obj.RC(2);
-            H=(TH-obj.oMH) * HH/obj.RC(1);
-            C=  (  (c-1)*W + obj.oML);
-            R=1-(  (r-1)*H + obj.oMT);
-        end
-        function [w,h,c,r,mwh]=inner_fun(obj,W,H,C,R)
-            mwh=obj.iM.*[W W H H];
-            w=W - sum(mwh(1:2));
-            h=H - sum(mwh(3:4));
-            r=R + mwh(4);
-            c=C + mwh(1);
-        end
-        function [rW,rH]=ratio_fun(w,h);
-            rWH=[w h] .* obj.fWH;
-            if any(obj.RC==1)
+        % TOTAL WH
+        oPosT=[0 1-TH(1) TW(1) TH(1)];
+
+        b=0;
+        %iPosT =[c(1)-il r(end)-ib c(end)-c(1)+w+il+ir r(1)-r(end)+h+it+ib];
+        iPosT =[c(1)-il r(end)-ib c(end)-c(1)+w+il+ir r(1)-r(end)+h+it+ib];
+        iPosTm=[c(1) r(end) c(end)-c(1)+w r(1)-r(end)+h];
+
+        function [rW,rH]=ratio_fun(fWH,RC,w,h,aspectR);
+            rWH=[w h] .* fWH;
+            if any(RC==1)
                 rF=1;
             else
-                rF=rWH(1)./rWH(2);
+                rF=rWH(1)./rWH(2)/aspectR;
             end
 
-            if rF > 0
+            if rF < 1
                 rH=rF;
                 rW=1;
             else
                 rH=1;
-                rW=1/rF;
+                rW=1./rF;
             end
         end
     end
-%- diminfo
-    function I=dimInfo(obj,ind,xedge,yedge,xshift,yshift)
-        RC=[obj.RC obj.RC(2)];
-        curC=[obj.cur obj.cur(2)];
-
-        if nargin < 3 || isempty(xedge)
-            xedge=1;
+    function set_sub_pos(obj,i,h,w)
+        pos=obj.Pos.i(i,:);
+        if nargin < 3
+            h=obj.Hs(i);
+            w=obj.Ws(i);
         end
-        if nargin < 4 || isempty(yedge)
-            yedge=1;
-        end
-        if nargin < 5 || isempty(xshift)
-            xshift=yedge-1;
-        end
-        if nargin < 6 || isempty(yshift)
-            yshift=xedge-1;
+        if h~=1 || w~=1
+            pos(3)=pos(3)*w + (w-1)*sum(obj.iM(1:2));
+            pos(4)=pos(4)*h + (h-1)*sum(obj.iM(3:4));
         end
 
-        RCR=[obj.RC obj.RC(1)];
-        curR=[obj.cur obj.cur(1)];
-        ctrs=(RCR+[yedge-1 xedge-1 yedge-1])/2;
-        bEven=mod(ctrs,1)== 0;
-        I.bCtrs=curR==ceil(ctrs + [0 0 0].*bEven);
+%'Units','normalized',
+        set(obj.ax{i},'Position',pos);
+        obj.Hs(i)=h;
+        obj.Ws(i)=w;
+    end
+end
+%- GENERAL GET
+%methods(Access=?SubLabels)
+methods(Hidden)
+    function out=get_bBy(obj,name)
+        out=obj.propFun('By',name);
+    end
+    function out=get_bCtr(obj,name)
+        out=obj.propFun('Ctr',name);
+    end
+    function out=propFun(obj,ffld,name,bRecurse)
+        if ~any(strcmp(name(1),{'x','y','z','c'}))
+            out=[];
+            return
+        end
 
-        I.bByRC=curC==[1+yshift RC(1)-xshift RC(2)-yshift];
-        bLoc=[curR(end-1:-1:1) obj.cur(2)]==[1+yshift RC(1)-xshift RC(2)-yshift];
+        % get field that negates the other
+        switch ffld
+        case 'Ctr'
+            nffld='By';
+        case 'By'
+            nffld='Ctr';
+        otherwise
+            nffld='';
+        end
 
-        I.bEvenCtr=I.bCtrs & bEven;
+        % base fld
+        if numel(name)==1
+            bfld=name(1);
+        elseif name(1)==name(2);
+            bfld=name(1:2);
+        else
+            bfld=name(1);
+        end
+        tfld=[bfld 'ticks'];
 
-        I.i=sub2ind([RC(2) RC(1)],obj.cur(2),obj.cur(1));
+        % eval fld
+        bFld=['b' upper(bfld) ffld];
+        tFld=['b' upper(bfld) 'Ticks' ffld];
 
-        if nargin >= 1 && ~isempty(ind)
-            % e.g. X LABELLING DETERMINED BY Y
-            if ind==2
-                dim=1;
+        if ~isempty((nffld))
+            nbFld=['b' upper(bfld) nffld];
+            ntFld=['b' upper(bfld) 'Ticks' nffld];
+        end
+
+        % actual
+        if contains(name,'tick');
+            fld=tfld;
+            ofld=bFld;
+
+            Fld=tFld;
+            oFld=bFld;
+            nFld=ntFld;
+        else
+            fld=bfld;
+            ofld=tFld;
+
+            Fld=bFld;
+            oFld=tFld;
+            nFld=nbFld;
+        end
+
+        out=obj.(Fld);
+        if ~isempty(out); return; end
+
+        % fallback to negating fld
+        if ~isempty(nffld)
+            out=~obj.(nFld);
+            if ~isempty(out); return; end
+        end
+
+        % fallback to other
+        out=obj.(oFld);
+        if ~isempty(out); return; end
+
+        % fallback to flag
+        out=obj.get_b(fld);
+        if ~isempty(out); return; end
+
+        out=obj.get_b(ofld);
+        if ~isempty(out); return; end
+    end
+    function out=get_fontSize(obj,name)
+        if strcmp(name,'oM')
+            ffld='fontSize';
+        elseif strcmp(name,'iM')
+            ffld='fontSize';
+        else
+            [fld,ufld]=obj.get_fld(name);
+            ffld=[fld 'FontSize'];
+        end
+        out=obj.(ffld);
+        if ~isempty(out)
+            return
+        end
+
+        switch name
+        case {'s','u'}
+            out=obj.SuFontSize;
+        case {'l','r','t','b'}
+            out=obj.RCFontSize;
+        case {'x','y','xx','yy'}
+            out=obj.XYFontSize;
+        case {'xticks','yticks','xxticks','yyticks'}
+            out=obj.ticksFontSize;
+        case {'iM','oM'}
+            out=obj.fontSize;
+        end
+        if isempty(out)
+            out=obj.fontSize;
+        end
+    end
+    function [fld,ufld]=get_fld(obj,name)
+        if numel(name)>=2 && name(1)==name(2)
+            fld=name(1:2);
+            ufld=upper(fld);
+        elseif name=='s'
+            fld='sup';
+            ufld='Sup';
+        elseif name=='u'
+            fld='sub';
+            ufld='Sub';
+        else
+            fld=name(1);
+            ufld=upper(fld);
+        end
+        if endsWith(name,'ticks')
+            fld=[fld 'ticks'];
+            ufld=[ufld 'Ticks'];
+        else
+            ufld=[ufld 'Label'];
+        end
+    end
+    function out=get_b(obj,name)
+        [fld,ufld]=obj.get_fld(name);
+        bfld=['b' ufld];
+        if endsWith(name,'ticks')
+            if strcmp(name,'yticks') && obj.iMargin(1) > 0
+                out=false;
+            elseif strcmp(name,'yyticks') && obj.iMargin(2) > 0
+                out=false;
+            elseif strcmp(name,'xxticks') && obj.iMargin(3) > 0
+                out=false;
+            elseif strcmp(name,'xticks') && obj.iMargin(4) > 0
+                out=false;
             else
-                dim=2;
+                out=obj.(bfld);
             end
+        else
+            lfld=[fld 'Txt'];
+            if ~isempty(obj.(bfld))
+                out=obj.(bfld);
+            else
+                out=~isempty(obj.(lfld));
+            end
+        end
+        if isempty(out)
+            out=false;
+        end
+    end
+    function iM=get_margin(obj,fld,bRaw)
+        if nargin < 3  || isempty(bRaw)
+            bRaw=false;
+        end
+        units=obj.get_units(fld);
+        fldn=obj.get_fld(fld);
+        if any(strcmp(fld,{'iM','oM'}))
+            Fld=[fldn(1) 'Margin'];
+        else
+            Fld=[fldn 'Margin'];
+        end
+        iM=obj.(Fld);
 
-            I.bBlankCtr= ~(I.bCtrs(ind) & bLoc(ind));
-            I.bEvenCtr=  I.bCtrs(ind)   & bLoc(ind) & bEven(ind);
-            I.bCtrs=     I.bCtrs(dim);
-            I.bBlankBy=     ~bLoc(ind);
+        if bRaw
+            return
         end
-    end
-%- MARGINS
-    function out=get_nCharWH(obj,fontSize)
-        out=obj.nCharWH./obj.FontSize .* fontSize;
-    end
-    function oMarginN=get_oMarginN(obj)
-        oM=obj.oMargin;
-        switch obj.oUnits
-            case 'normalized'
-                oMarginN=oM;
-            case 'characters'
-                % x, y, w, h
-                oMarginN=oM./obj.nCharWH_RC_rev(1);
-            case 'pixels'
-                TODO
+        if any(strcmp(fld,{'yticks','yyticks'}))
+            iM=iM+1;
+        elseif any(strcmp(fld,{'xticks','xxticks'}))
+            iM=iM+.15;
         end
-    end
-    function out=get_iMarginN(obj)
-        iM=obj.iMargin;
-        switch obj.iUnits
-            case 'normalized'
-                out=iM;
-            case 'characters'
-                out=iM./repmat(obj.nCharWH,1,2);
-            case 'pixels'
-                TODO
+        if strcmp(units,'characters')
+            fsz=obj.get_fontSize(fld);
+            %iM=iM.*(fsz/obj.defFontSize);
+            iM=iM.*(fsz/obj.defFontSize);
         end
     end
     function out=get_marginN(obj,fld)
-        if nargin < 2
-            fld='iMargin';
+        iM=obj.get_margin(fld,false);
+        L0=obj.nLineWH_T;
+        C0=obj.nCharWH_T;
+        L=repelem(L0,1,2);
+        C=repelem(C0,1,2);
+        out=iM./L;
+    end
+end
+methods(Access=protected)
+%- Margins
+    function units=get_units(obj,fld)
+        if strcmp(fld,'iM')
+            units=obj.iUnits;
+        elseif strcmp(fld,'oM')
+            units=obj.oUnits;
+        elseif any('xyzc'==fld(1))
+            units=obj.iUnits;
+        else
+            units=obj.oUnits;
         end
-        iM=obj.(fld);
-        switch obj.iUnits
-            case 'normalized'
-                iMarginN=iM;
-            case 'characters'
-                % x, y, w, h
-                bFlip = false;
-				switch fld
-                case {'xlabelMargin','ylabelMargin','yylabelMargin'}
-                    fsz=obj.XYFontSize;
-                case {'clabelMargin','rlabelMargin','clabelBaseMargin','rlabelBaseMargin'}
-                    fsz=obj.RCFontSize;
-                case 'supMargin'
-                    fsz=obj.supFontSize;
-                case 'titleMargin'
-                    fsz=obj.titleFontSize;
-                case {'xticksMargin','yticksMargin','yyticksMargin'}
-                    fsz=obj.ticksFontSize;
-                otherwise
-                    fld
-				end
-                nCharWH=obj.get_nCharWH(fsz);
+    end
+    function get_flds(obj)
+        % flds
+        %flds={'xticks';'yticks';'xxticks';'yyticks';...
+        %      'x';'y';'xx';'yy';...
+        %      't';'b';'l';'r';...
+        %      's';'u'};
+        flds={...
+              'oT';'s';'t';'xx';'xxticks';'iT';... % GOOD
+              'oR';'r';'yy';'yyticks';'iR';... % GOOD
+              'iB';'xticks';'x';'b';'u';'oB';...  % GOOD
+              'iL';'yticks';'y';'l';'oL';...
+        };
 
-                if ~any(strcmp(fld,{'yticksMargin','yyticksMargin'})) && startsWith(fld,{'y','r'});
-                    ind=1;
-                else
-                    ind=2;
-                end
-                out=iM./nCharWH(ind);
-            case 'pixels'
-                TODO
-        end
+              %'yyticks';'yy';'r';...
+        N=numel(flds);
+
+        % by flds
+        bFlds=cell(N,1);
+        byFlds={'xticks','yticks','xxticks','yyticks',...
+                'x','y','xx','yy'};
+        bBy=ismember(flds,byFlds);
+
+
+        % rev flds
+        rFlds=cell(N,1);
+        revFlds={'iL','yL','oL','iL','y','yy','l','r'};
+        nRevFlds={'yticks','yyticks'};
+        bRev=ismember(flds,revFlds);
+        bNRev=ismember(flds,nRevFlds);
+        rFlds(bRev)={'f'};
+        rFlds(bNRev)={'n'};
+        rFlds(~bRev & ~bNRev)={''};
+
+        % loc flds
+        lFlds=cell(N,1);
+        topFlds={'oT','iT','xxticks','xx','t','s'};
+        botFlds={'oB','iB','xticks','x','b','u'};
+        leftFlds={'oL','iL','yticks','y','l'};
+        rightFlds={'oR','iR','yyticks','yy','r'};
+        lFlds(ismember(flds,topFlds))={'T'};
+        lFlds(ismember(flds,botFlds))={'B'};
+        lFlds(ismember(flds,leftFlds))={'L'};
+        lFlds(ismember(flds,rightFlds))={'R'};
+        bLR=ismember(flds,[leftFlds rightFlds]);
+
+        % aflds
+        locs={'o','i'};
+        dirs={'L','R','T','B'};
+        fflds=Set.distribute(locs,dirs);
+        aFlds=strcat(fflds(:,1), fflds(:,2))';
+        aFlds=[aFlds; num2cell(zeros(size(aFlds)))];
+
+        % Inner
+        bInner=false(N,1);
+
+        obj.flds=flds;
+        obj.topFlds=topFlds;
+        obj.botFlds=botFlds;
+        obj.leftFlds=leftFlds;
+        obj.rightFlds=rightFlds;
+
+        obj.bBy=bBy;
+        obj.bNRev=bNRev;
+        obj.bRev=bRev;
+        obj.bInner=bInner;
+        obj.bLR=bLR;
+
+        obj.rFlds=rFlds;
+        obj.lFlds=lFlds;
+        obj.aFlds=aFlds;
     end
     function [oM,iM]=get_margins(obj)
-        oMarginN=obj.get_oMarginN();
-        iMarginN=obj.get_iMarginN();
+        % Margins pre-normalized
 
-        oMW=sum(oMarginN(1:2));
-        oMH=sum(oMarginN(3:4));
-        iMW=sum(iMarginN(1:2));
-        iMH=sum(iMarginN(3:4));
+        % aflds
+        oM=obj.get_margin('oM');
+        iM=obj.get_margin('iM');
 
-        oML=oMarginN(1);
-        iML=iMarginN(1);
-        oMT=oMarginN(3);
-        iMT=iMarginN(3);
+        oM=obj.get_margin('oM');
+        iM=obj.get_margin('iM');
+        %m.iM=iM;
+        %m.oM=oM;
+        m=struct();
+        for i = 1:length(obj.flds)
+            m.(obj.flds{i})=0;
+        end
+        m.iL=iM(1);
+        m.iR=iM(2);
+        m.iT=iM(3);
+        m.iB=iM(4);
 
+        m.oL=oM(1);
+        m.oR=oM(2);
+        m.oT=oM(3);
+        m.oB=oM(4);
 
-        % XY labels
-        mx=obj.get_marginN('xlabelMargin');
-        my=obj.get_marginN('ylabelMargin');
-        mz=obj.get_marginN('yylabelMargin');
-        mxt=obj.get_marginN('xticksMargin');
-        myt=obj.get_marginN('yticksMargin');
-        mzt=obj.get_marginN('yyticksMargin');
-
-        if obj.xlabelByRow
-            oMH=oMH+mx+mxt;
-        else
-            iMH=iMH+mx+mxt;
-        end
-        if obj.ylabelByCol
-            oMW=oMW+my+myt;
-            oML=oML+my+myt;
-        else
-            iMW=iMW+my+myt;
-            iML=iML+my+myt;
-        end
-        if obj.yylabelByCol && obj.bYYlabels
-            oMW=oMW+mz+mzt;
-        elseif obj.bYYlabels
-            iMW=iMW+mz+mzt;
-        end
-
-        % RC labels
-        mc=0;
-        mr=0;
-        if obj.bClabel_
-            mc=obj.get_marginN('clabelMargin'); % top or bottom
-        end
-        if obj.bRlabel_
-            mr=obj.get_marginN('rlabelMargin'); % left or right
-        end
-        oMH=oMH+mc;
-        oMW=oMW+mr;
-        if strcmp(obj.clabelLoc,'top')
-            oMT=oMT+mc;
-        end
-        if strcmp(obj.rlabelLoc,'left')
-            oML=oML+mr;
-        end
-
-        % RC Base Labels
-        mC=0;
-        mR=0;
-        if obj.bClabelBase_
-            mC=obj.get_marginN('clabelBaseMargin'); % left or right
-        end
-        if obj.bRlabelBase_
-            mR=obj.get_marginN('rlabelBaseMargin'); % top or bottom
-        end
-        oMW=oMW+mC;
-        oMH=oMH+mR;
-        if strcmp(obj.rlabelLoc,'top')
-            oMT=oMT+mR;
-        end
-        if strcmp(obj.clabelLoc,'left')
-            oML=oML+mC;
-        end
-
-        % TITLES
-        ms=0;
-        mt=0;
-        mu=0;
-        if obj.bSuptitle_
-            ms=obj.get_marginN('supMargin');   % top or bottom (startswith)
-        end
-        if obj.bSubtitle_
-            mu=obj.get_marginN('subMargin');   % top or bottom (startswith)
-        end
-        if obj.bTitle_
-            mt=obj.get_marginN('titleMargin'); % top
-        end
-
-        oMH=oMH+mu;
-        oMH=oMH+ms;
-        oMH=oMH+mt;
-        if startsWith(obj.supLoc,'top')
-            oMT=oMT+ms;
-        end
-        oMT=oMT+mt;
-
-        %oML=my+myt
-
-        % COMBINE
-        obj.oM=[oML oMW-oML oMT oMH-oMT];
-        obj.iM=[iML iMW-iML iMT iMH-iMT];
-    end
-%- Labels
-    function [ctrs,va]=set_clabel_axis_pos(obj,loc)
-        if nargin < 2 || isempty(loc)
-            loc=obj.cTitl.loc;
-        else
-            obj.cTitl.loc=loc;
-        end
-        if strcmp(loc,'bottom')
-            va='bottom';
-            pos=[0, 0.00, 1, 0.95];
-        elseif strcmp(loc,'top')
-            va='top';
-            pos=[0, 1.00, 1, 0.95];
-        else
-            error('incorrect column label location')
-        end
-        ctrs=obj.get_col_ctrs;
-        if Axis.isInvalid(obj.cTitl.ax)
-            obj.cTitl.ax=axes('Position',pos,'Units','normalized','Color','None','XColor','None','YColor','None');
-            obj.cTitl.tbox=cell(length(ctrs)+1,1);
-        else
-            set(obj.cTitle.ax,'Position',pos);
-        end
-    end
-    function [ctrs,va,rot]=set_rlabel_axis_pos(obj,loc)
-        if nargin < 2 || isempty(loc)
-            loc=obj.rTitl.loc;
-        else
-            obj.rTitl.loc=loc;
-        end
-        if strcmp(loc,'left')
-            va='top';
-            pos=[0.00, 0.00, 1, 0.95];
-            rot=90;
-        elseif strcmp(loc,'right')
-            va='top';
-            pos=[1.00, 0.00, 0, 1.00];
-            rot=270;
-        end
-        ctrs=obj.get_row_ctrs();
-        if Axis.isInvalid(obj.rTitl.ax)
-            obj.rTitl.ax=axes( 'Position', pos,'Units','normalized','Color','None','XColor','None','YColor','None');
-            obj.rTitl.tbox=cell(length(ctrs)+1,1);
-        else
-            set(obj.rTitl.ax,'Position',pos);
-        end
-    end
-    function set_clabel_tbox_pos(obj)
-        ctrs=obj.get_col_ctrs();
-        for i = 1:length(ctrs)
-            pos=obj.cTitl.tbox{i}.Position;
-            set(obj.cTitl.tbox{i},'Position',[ctrs(i) 0 pos(3)]);
-        end
-    end
-    function set_rlabel_tbox_pos(obj)
-        ctrs=obj.get_row_ctrs();
-        for i = 1:length(ctrs)
-            if ~Axis.isInvalid(obj.rTitl.tbox{i})
-                set(obj.rTitl.tbox{i},'Position',[0 ctrs(i)]);
+        N=length(obj.flds);
+        obj.AFlds=cell(N,1);
+        for i = 1:N
+            fld=obj.flds{i};
+            if startsWith(fld,{'i','o'})
+                ;
+            elseif obj.get_b(fld)
+                m.(fld)=obj.get_margin(fld);
+            else
+                m.(fld)=0;
             end
+
+            % AFLD
+            obj.bInner(i)=startsWith(fld,'i') || (obj.bBy(i) && ~obj.get_bBy(fld));
+            if obj.bInner(i)
+                obj.bFlds{i}='i';
+            else
+                obj.bFlds{i}='o';
+            end
+            %aFld=[obj.bFlds{i} obj.lFlds{i} obj.rFlds{i}];
+            aFld=[obj.bFlds{i} obj.lFlds{i}];
+            obj.AFlds{i}=aFld;
+
         end
+        obj.m0=m;
     end
-%- Base Labels
-    function set_clabelBase(obj,lbl,va,rot)
-        t=['{\bf' lbl '}'];
-        tpos=obj.clabelBasePos;
-        ha=obj.clabelBaseHA;
-        if Axis.isInvalid(obj.cBTitl.tbox)
-            obj.cBTitl.tbox=text(tpos(1),tpos(2),t,...
-                'FontSize',fontsize,...
-                'HorizontalAlignment',ha,...
-                'VerticalAlignment',va);
-        else
-            obj.cBTitl.tbox.String=t;
-            %set(obj.cTitl.tbox{i},'FontSize',fontsize);
+    function normalize_margins(obj);
+        L0=obj.nLineWH_T;
+        C0=obj.nCharWH_T;
+        L=repelem(L0,1,2);
+        C=repelem(C0,1,2);
+
+
+        flds=fieldnames(obj.m0);
+        c=struct();
+        m=struct();
+        a=struct(obj.aFlds{:});
+        for i = 1:numel(flds)
+            fld=flds{i};
+            aFld=obj.AFlds{i};
+
+            % swap w & h of text
+            if obj.bNRev(i)
+                T0=C0;
+            elseif obj.bRev(i)
+                T0=L0;
+            else
+                T0=L0;
+            end
+
+            % swap r & c of figure
+            if obj.bLR(i)
+                ind=1; % reverse of what you think
+            else
+                ind=2;
+            end
+            m.(fld) =obj.m0.(fld)  ./T0(ind);
+
+            c.(fld)=a.(aFld);
+            a.(aFld)=a.(aFld) + m.(fld);
+
         end
-    end
-    function set_rlabelBase(obj,lbl,rot,va)
-        t=['{\bf' lbl '}'];
-        tpos=obj.rlabelBasePos;
-        ha=obj.rlabelBaseHA;
-        fontsize=obj.RCFontSize;
+        obj.m=m;
 
-        %ha='center';
-        if Axis.isInvalid(obj.rBTitl.tbox)
-            obj.rBTitl.tbox=text(tpos(1),tpos(2),t,'FontSize',fontsize,'HorizontalAlignment',ha,'VerticalAlignment',va);
-            set(obj.rBTitl.tbox,'Rotation',rot);
-        else
-            obj.rBTitl.tbox.String=t;
-            %set(obj.cTitl.tbox{i},'FontSize',fontsize);
-        end
-    end
-    function set_tBTitl_axis_pos(obj)
-        myt=obj.get_marginN('yticksMargin');
-        %my=obj.get_marginN('ylabelMargin');
-        ml=myt;
-        mt=obj.get_marginN('titleMargin');
+        obj.oM=[a.oL a.oR a.oT a.oB];
+        obj.iM=[a.iL a.iR a.iT a.iB];
+        obj.MC=c;
 
-        cpos=obj.c(1)-ml;
-        rpos=obj.r(1)+obj.h(1) + mt;
-
-        wh=obj.getCharWH(obj.tBTitl.txt,obj.titleFontSize);
-
-        v=[cpos rpos wh];
-
-        if Axis.isInvalid(obj.tBTitl.ax)
-            obj.tBTitl.ax=axes(...
-                'Units','normalized',...
-                'Position',v,...
-                'Color','None','XColor','None','YColor','None'...
-            );
-        else
-            set(obj.tBTitl.ax,'Position',v);
-        end
-
-    end
-    function set_titleBase(obj,lbl)
-        t=['{\bf' lbl '}'];
-
-        obj.tBTitl.txt=lbl;
-        obj.set_tBTitl_axis_pos();
-
-        tpos=obj.titleBasePos;
-        ha=obj.titleBaseHA;
-        fontsize=obj.titleFontSize;
-        rot=0;
-        va='top';
-        ha='left';
-
-
-        %ha='center';
-        if Axis.isInvalid(obj.tBTitl.tbox)
-            obj.tBTitl.tbox=text(tpos(1),tpos(2),t,'FontSize',fontsize,'HorizontalAlignment',ha,'VerticalAlignment',va);
-            set(obj.rTitl.tbox,'Rotation',rot);
-        else
-            obj.tBTitl.tbox.String=t;
-            %set(obj.cTitl.tbox{i},'FontSize',fontsize);
-        end
-    end
-    function ctrs=get_row_ctrs(obj)
-        ctrs=zeros(obj.RC(1),1);
-        for r = 1:obj.RC(1)
-            i=sub2ind(obj.RC,r,1);
-            ctrs(r)=obj.ctrs{i}(1);
-        end
-    end
-    function ctrs=get_col_ctrs(obj)
-        ctrs=zeros(obj.RC(2),1);
-        for c = 1:obj.RC(2)
-            i=sub2ind(obj.RC,1,c);
-            ctrs(c)=obj.ctrs{i}(2);
-        end
+        %obj.oM=obj.oM0./L + obj.oM0f./L + obj.oM0n./C;
+        %obj.iM=obj.iM0./L + obj.iM0f./L + obj.iM0n./C;
     end
 
-    function wh=getCharWH(obj,txt,fontsize)
-        nCharWH=obj.get_nCharWH(fontsize);
-        wh=[numel(txt) 1]./nCharWH;
-    end
 end
 methods(Hidden)
 %- resize
-    function resize(obj,src,event)
+    function resize_(obj,src,event)
         if ~obj.bLockAxes
             %builtin('resize',src,event);
             return
@@ -1075,35 +1705,22 @@ methods(Hidden)
         obj.bResize=0;
         cl=tmpSet(obj,'bResize',1);
 
-        obj.get_conversions();
-        obj.get_margins();
-        obj.selectAll();
+        obj.get_geometry();
 
-        obj.fWH=obj.f.Position(3:4);
-        obj.bFirst=true;
+        obj.set_background();
+        if obj.bTest
+            obj.set_ibackground();
+        end
+
         for i = 1:obj.n
-            obj.select(i);
-            obj.ylabel();
-            obj.xlabel();
-            if obj.bYYlabels
-                obj.yylabel();
-            end
-            cl2=tmpSet(obj,'bFirst',false);
+            obj.set_sub_pos(i);
         end
+        obj.AL_set_position();
 
-        if ~isempty(obj.rTitl.ax)
-            obj.set_rlabel_axis_pos();
-            obj.set_rlabel_tbox_pos();
-        end
-        if ~isempty(obj.cTitl.ax)
-            obj.set_clabel_axis_pos();
-            obj.set_clabel_tbox_pos();
-        end
-        if ~isempty(obj.tBTitl.ax)
-            obj.set_tBTitl_axis_pos();
-        end
+        %obj.AL_draw(); % in SubPlot_AxesL
     end
     function fitFont(obj)
+        % TODO
         %Units
         %normalized
         %pixels
@@ -1122,695 +1739,34 @@ methods(Hidden)
         %'inches' | 'centimeters' | 'normalized' | 'points'
     end
     function fitWin(obj)
-        fWH=obj.f.Position(3:4);
-        o=fWH(1)./fWH(2);
+        o=obj.fWH(1)./obj.fWH(2);
         e=obj.aspectIdeal;
+        fld='PaperPosition';
 
         if o > e
-            w=e*fWH(2);
-            obj.f.Position(3)=w;
+            w=e*obj.fWH(2);
+            obj.f.(fld)(3)=w;
         else
-            33
-            h=fWH(1)/e;
+            h=obj.fWH(1)/e;
             h
-            obj.f.Position(4)=h;
+            obj.f.(fld)(4)=h;
         end
     end
 %- label
-    %function label(obj,xLabel,yLabel,bCtrOnly,bByRow,bByCol)
-    %    % OR BOTH
-    %    % ON EACH LOOP LABEL
-    %    if nargin < 2
-    %        bCtrOnly=obj.bCtrOnly;
-    %        xLabel=[];
-    %        yLabel=[];
-    %    end
-    %    if nargin < 4
-    %        bCtrOnly=[false false];
-    %    end
-    %    if nargin < 5
-    %        bByRow=false;
-    %    end
-    %    if nargin < 6
-    %        bByCol=false;
-    %    end
-    %    if numel(bCtrOnly)==1
-    %        bCtrOnly=[bCtrOnly bCtrOnly];
-    %    end
-    %    obj.xlabel(xLabel,bCtrOnly(1),bByRow);
-    %    obj.ylabel(yLabel,bCtrOnly(2),bByCol);
-    %end
-    %function rlabel(obj,txt,loc,lbl,nnewline)
-    function rlabel(obj,txt)
-        fontsize=obj.RCFontSize;
-        ha=obj.rlabelHA;
-
-        if nargin < 2 || isempty(txt)
-            txt=obj.rlabels;
-        end
-        % AFTER LOOP
-        if nargin < 3 || isempty(loc)
-            loc=obj.rlabelLoc;
-        end
-        if nargin < 4 || isempty(lbl)
-            lbl=obj.rlabelBase;
-        end
-        if nargin < 5 || isempty(nnewline)
-            nnewline=obj.rNNewline;
-        end
-
-        [ctrs,va,rot]=obj.set_rlabel_axis_pos(loc);
-
-        if nnewline==0
-            nnew='';
-        else
-            nnew=repmat(newline,1,abs(nnewline));
-        end
-
-        bSup=false; % XXX
-
-        for i = 1:length(ctrs)
-            if ischar(txt)
-                t=txt;
-            elseif iscell(txt)
-                t=txt{i};
-            end
-            if nnewline > 0
-                va='bottom';
-                t=[t nnew];
-            else
-                t=[nnew t];
-            end
-
-            t=['{\bf' t '}'];
-
-            if bSup
-                t=[newline t];
-            end
-
-            tpos=[0,ctrs(i)];
-            if isempty(obj.rTitl.tbox{i})
-                obj.rTitl.tbox{i}=text(tpos(1),tpos(2),t,...
-                    'Units','normalized',...
-                    'FontSize',fontsize,...
-                    'HorizontalAlignment',ha,...
-                    'VerticalAlignment',va);
-                set(obj.rTitl.tbox{i},'Rotation',rot);
-                %enableDefaultInteractivity(obj.rTitl.tbox{i});
-            else
-                obj.rTitl.tbox{i}.String=t;
-            end
-        end
-        if ~isempty(lbl)
-            obj.set_rlabelBase(lbl,rot,va);
-        end
-    end
-    function clabel(obj,txt)
-    %function clabel(obj,txt,loc,lbl,nnewline)
-        % AFTER LOOP
-        fontsize=obj.RCFontSize;
-        ha=obj.clabelHA;
-
-        if nargin < 2 || isempty(txt)
-            txt=obj.clabels;
-        end
-        if nargin < 3 || isempty(loc)
-            loc=obj.cLabelLoc;
-        end
-        if nargin < 4 || isempty(lbl)
-            lbl=obj.clabelBase;
-        end
-        if nargin < 5 || isempty(nnewline)
-            nnewline=obj.cNNewline;
-        end
-
-        [ctrs,va]=obj.set_clabel_axis_pos(loc);
-
-        if nnewline==0
-            nnew='';
-        else
-            nnew=repmat(newline,1,abs(nnewline));
-        end
-
-        bSup=false; % XXX
-
-
-        for i = 1:length(ctrs)
-            if ischar(txt)
-                t=txt;
-            elseif iscell(txt)
-                t=txt{i};
-            end
-            if nnewline > 0
-                t=[t nnew];
-                va='bottom';
-            else
-                t=[nnew t];
-            end
-
-            t=['{\bf' t '}'];
-            if bSup
-                t=[newline t];
-            end
-
-            tpos=[ctrs(i),0];
-            if Axis.isInvalid(obj.cTitl.tbox{i})
-                obj.cTitl.tbox{i}=text(tpos(1),tpos(2),t,...
-                    'Units','normalized',...
-                    'FontSize',fontsize,...
-                    'HorizontalAlignment',ha,...
-                    'VerticalAlignment',va);
-            else
-                obj.cTitl.tbox{i}.String=t;
-            end
-
-        end
-        if ~isempty(lbl)
-            obj.set_clabelBase(lbl,va,rot);
-        end
-    end
-    %function xlabel(obj,txt,bCtrOnly,bByRow,xedge,yedge)
-    function xlabel(obj,txt)
-        if nargin < 2
-            bCtrOnly=obj.xlabelCtrOnly;
-            txt='';
-        end
-        if nargin < 3 || isempty(bCtrOnly)
-            bCtrOnly=obj.xlabelCtrOnly;
-        end
-        if nargin < 4 || isempty(bByRow)
-            bByRow=obj.xlabelByRow;
-        end
-        if nargin < 5 || isempty(xedge)
-            xedge=obj.xlabelXYEdge(1);
-        end
-        if nargin < 6 || isempty(yedge)
-            yedge=obj.xlabelXYEdge(2);
-        end
-
-        I=obj.dimInfo(2,xedge,yedge);
-
-        if (I.bBlankCtr && bCtrOnly)
-            txt=' ';
-        elseif I.bBlankBy & bByRow
-            txt=' ';
-        elseif isempty(txt)
-            xl=get(gca,'XLabel');
-            txt=xl.String;
-        end
-
-        i=sub2ind(obj.RC,obj.cur(1),obj.cur(2));
-        c=obj.c(i);
-        r=obj.r(i);
-        w=obj.w(i);
-        h=obj.get_marginN('xticksMargin');
-        if I.bEvenCtr
-            c=c+w/2-(obj.ml+obj.mr)/2;;
-        end
-        pos=[c r-h w h];
-
-        if isempty(obj.xTitl.tbox)
-            obj.xTitl.tbox=cell(obj.RC);
-        end
-        cl=tmpSet(obj.f,'CurrentAxes',gca);
-
-        if isempty(obj.xTitl.tbox{i})
-
-            % init ax
-            obj.xTitl.ax{i}=axes('Position', pos,'Units','normalized','Color','None','XColor','None','YColor','None');
-
-            set(obj.f,'CurrentAxes',obj.xTitl.ax{i});
-
-            % init tbox
-            obj.xTitl.tbox{i}=text(...
-                 0.5,0,txt,...
-                'Units','normalized',...
-                'FontSize',obj.XYFontSize,...
-                'HorizontalAlignment','center',...
-                'VerticalAlignment','top');
-        elseif obj.bResize
-            set(obj.xTitl.ax{i},'Position',pos);
-        else
-            obj.xTitl.tbox{i}.String=txt;
-        end
-
-        delete(cl);
-        if ~obj.bResize
-            xlabel('');
-        end
-    end
-    function ylabel(obj,txt)
-    %function ylabel(obj,txt,bCtrOnly,bByCol,xedge,yedge)
-        if nargin < 2
-        %if nargin < 2 && obj.bResize
-            txt='';
-        end
-        bCtrOnly=obj.ylabelCtrOnly;
-        bByCol=obj.ylabelByCol;
-        xedge=obj.ylabelXYEdge(1);
-        yedge=obj.ylabelXYEdge(2);
-
-        I=obj.dimInfo(1,xedge,yedge);
-
-        if I.bBlankCtr & bCtrOnly
-            txt=' ';
-        elseif I.bBlankBy & bByCol
-            txt=' ';
-        end
-        if isempty(txt)
-            yl=get(gca,'YLabel');
-            txt=yl.String;
-        end
-
-
-        % pos
-        i=sub2ind(obj.RC,obj.cur(1),obj.cur(2));
-        c=obj.c(i);
-        r=obj.r(i);
-        w=obj.get_marginN('yticksMargin');
-        h=obj.h(i);
-        if I.bEvenCtr
-            r=r-h/2-(obj.mb+obj.mt)/2;
-        end
-        w
-        pos=[c-w r w h];
-
-        if isempty(obj.yTitl.tbox)
-            obj.yTitl.tbox=cell(obj.RC);
-        end
-        cl=tmpSet(obj.f,'CurrentAxes',gca);
-
-        if isempty(obj.yTitl.tbox{i})
-
-            % init ax
-            obj.yTitl.ax{i}=axes('Position', pos,'Units','normalized','Color','k','XColor','None','YColor','None');
-
-            set(obj.f,'CurrentAxes',obj.yTitl.ax{i});
-
-            % init tbox
-            obj.yTitl.tbox{i}=text(...
-                 0.5,0.5,txt,...
-                'Units','normalized',...
-                'FontSize',obj.XYFontSize,...
-                'HorizontalAlignment','center',...
-                'Rotation',90,...
-                'VerticalAlignment','bottom');
-        elseif obj.bResize
-            set(obj.yTitl.ax{i},'Position',pos);
-        else
-            obj.yTitl.tbox{i}.String=txt;
-        end
-
-        delete(cl);
-        if ~obj.bResize
-            ylabel(''); % XXX SLOW
-        end
-
-    end
     %function yylabel(obj,txt,bCtrOnly,bByCol,xedge,yedge)
-    function yylabel(obj,txt)
-        if nargin < 2 && obj.bResize
-            txt='';
-        end
-        if nargin < 3
-            bCtrOnly=obj.bCtrOnly;
-            xLabel=[];
-        end
-        if nargin < 4 || isempty(bCtrOnly)
-            bCtrOnly=obj.yylabelCtrOnly;
-        end
-        if nargin < 5 || isempty(bByCol)
-            bByCol=obj.yylabelByCol;
-        end
-        if nargin < 6 || isempty(xedge)
-            xedge=obj.yylabelXYEdge(1);
-        end
-        if nargin < 7 || isempty(yedge)
-            yedge=obj.yylabelXYEdge(2);
-        end
-
-        I=obj.dimInfo(3,xedge,yedge);
-        %if obj.cur(1)==1 && obj.cur(2)==4
-        %    I
-        %end
-
-        axset=false;
-        if I.bBlankCtr & bCtrOnly
-            txt=' ';
-        elseif I.bBlankBy & bByCol
-            txt=' ';
-        else
-            axset=true;
-        end
-
-        if ~(axset || I.bEvenCtr)
-            return
-        end
-
-        % pos
-        i=sub2ind(obj.RC,obj.cur(1),obj.cur(2));
-        c=obj.c(i);
-        r=obj.r(i);
-        W=obj.w(i);
-        w=obj.get_marginN('yticksMargin');
-        h=obj.h(i);
-        if I.bEvenCtr
-            r=r-h/2-(obj.mb+obj.mt)/2;
-        end
-        pos=[c+W+w r w h];
-
-        if isempty(obj.yyTitl.tbox)
-            obj.yyTitl.tbox=cell(obj.RC);
-        end
-        cl=tmpSet(obj.f,'CurrentAxes',gca);
-
-        if isempty(obj.yyTitl.tbox{i})
-
-            % init ax
-            obj.yyTitl.ax{i}=axes('Position', pos,'Units','normalized','Color','None','XColor','None','YColor','None');
-
-            set(obj.f,'CurrentAxes',obj.yyTitl.ax{i});
-
-            % init tbox
-            obj.yyTitl.tbox{i}=text(...
-                 -0.5,0.5,txt,...
-                'Units','normalized',...
-                'FontSize',obj.XYFontSize,...
-                'HorizontalAlignment','center',...
-                'Rotation',270,...
-                'Color',obj.yylabelColor,...
-                'VerticalAlignment','bottom');
-        elseif obj.bResize
-            set(obj.yyTitl.ax{i},'Position',pos);
-        else
-            obj.yyTitl.tbox{i}.String=txt;
-        end
-
-    end
-    function title(obj,txt,lbl)
-        if nargin < 2 || (isempty(txt) && ~ischar(txt))
-            txt=obj.titles{obj.cur};
-        end
-        if nargin < 3 || (isempty(lbl) && ~ischar(lbl))
-            lbl=obj.titleBase;
-        end
-
-        if ~obj.titleByRow || (obj.titleByRow && obj.cur(1)==1)
-            title(txt);
-            if ~isempty(lbl)
-                obj.set_titleBase(lbl);
-            end
-        else
-            title('');
-        end
-    end
-%- ticks
-    %function xticks(obj,xtiks,xedge,inds)
-    %    % NOTE DO AFTER XLIM
-    %    if nargin < 3 || isempty(xedge)
-    %        xedge=obj.xlabelXYEdge(1);
-    %    end
-    %    bInds=nargin >= 4 && ~isempty(inds);
-
-    %    if nargin >= 2 && ~isempty(xticks)
-    %        xticks(xtiks);
-    %        if bInds
-    %            lbls=xticklabels;
-    %            binds=false(size(lbls));
-    %            binds(inds)=true;
-    %            lbls(~binds)={''};
-    %            xticklabels(lbls);
-    %        end
-    %    end
-    %    if obj.cur(1)~=(obj.RC(1)-(xedge-1))
-    %        l=xticklabels;
-    %        xticklabels(repmat({''},length(l),1));
-    %    end
-    %end
-    function xticks(obj,xtiks,indsORlbls)
-        % NOTE DO AFTER XLIM
-
-        % xticks
-        if nargin < 2 || isempty(xtiks)
-            xtiks=xticks();
-        end
-
-        % xedge
-        xedge=obj.xlabelXYEdge(1);
-
-        % lbls
-        if nargin < 3 || isempty(indsORlbls)
-            lbls=xticklabels();
-        elseif isnumeric(indsORlbls)
-            lbls=xticklabels();
-            inds=indsORlbls;
-            binds=false(size(lbls));
-            binds(inds)=true;
-            lbls(~binds)={''};
-        else
-            lbls=indsORlbls;
-        end
-
-
-        % ticks
-        xticks(xtiks);
-
-        % labels
-        if obj.xlabelByRow && obj.cur(1)~=obj.RC(1)-(xedge-1)
-            xticklabels(repmat({''},length(lbls),1));
-        else
-            xticklabels(lbls);
-        end
-    end
-    function yticks(obj,ytiks,indsORlbls)
-        % NOTE DO AFTER YLIM
-
-        % yticks
-        if nargin < 2 || isempty(ytiks)
-            ytiks=yticks();
-        end
-
-        % yedge
-        yedge=obj.ylabelXYEdge(2);
-
-        % lbls
-        if nargin < 3 || isempty(indsORlbls)
-            lbls=yticklabels();
-        elseif isnumeric(indsORlbls)
-            lbls=yticklabels();
-            inds=indsORlbls;
-            binds=false(size(lbls));
-            binds(inds)=true;
-            lbls(~binds)={''};
-        else
-            lbls=indsORlbls;
-        end
-
-
-        % ticks
-        yticks(ytiks);
-
-        % labels
-        if obj.ylabelByCol && obj.cur(2)~=yedge
-            yticklabels(repmat({''},length(lbls),1));
-        else
-            yticklabels(lbls);
-        end
-    end
-    function yyticks(obj,ytiks,yedge,inds)
-        % NOTE DO AFTER YLIM
-        cl=onCleanup(@() yyaxis('left'));
-        yyaxis right;
-
-        if nargin < 3 || isempty(yedge)
-            yedge=obj.RC(2)-obj.yylabelXYEdge(2)+1;
-        end
-        bInds=nargin >= 4 && ~isempty(inds);
-
-        if nargin >= 2 && ~isempty(ytiks)
-            yticks(ytiks);
-            if bInds
-                lbls=yticklabels;
-                binds=false(size(lbls));
-                binds(inds)=true;
-                lbls(~binds)={''};
-                yticklabels(lbls);
-            end
-        end
-
-        if obj.cur(2)~=yedge
-            l=yticklabels;
-            yticklabels(repmat({''},length(l),1));
-        end
-    end
-%- SupTitle
-    function supTitle(obj,varargin)
-        obj.suptitle(varargin{:});
-    end
-    function subtitle(obj,txt,fontsize,loc)
-        if nargin < 2 || isempty(txt)
-            txt=obj.subTxt;
-        end
-        if isempty(txt)
-            return
-        end
-        if nargin < 3 || isempty(fontsize)
-            fontsize=obj.supFontSize;
-        end
-        if nargin < 4 || isempty(loc)
-            loc=obj.supLoc;
-        end
-        if Axis.isInvalid(obj.uTitl.ax)
-            obj.uTitl.ax=axes();
-        else
-            axes(obj.uTitl.ax);
-        end
-        switch loc
-            case 'top'
-                pos=[0, 1, 1, 0];
-                ha='Center';
-                va='top';
-                tpos=[0.5 1];
-            case 'topleft'
-                pos=[0, 1, 1, 0];
-                ha='Left';
-                va='top';
-                tpos=[0.01 0];
-            case 'bottom'
-                pos=[0, 0, 1, 0];
-                ha='Center';
-                va='bottom';
-                tpos=[0.5,0];
-            case 'bottomleft'
-                pos=[0, 0, 1, 0];
-                ha='Left';
-                va='bottom';
-                tpos=[0.01,0];
-        end
-        if Axis.isInvalid(obj.uTitl.tbox)
-            set(obj.uTitl.ax,...
-                'Position',pos,...
-                'Color','None',...
-                'XColor','None',...
-                'YColor','None');
-
-            obj.uTitl.tbox=text(tpos(1),tpos(2),txt,...
-                'FontSize',fontsize,...
-                'HorizontalAlignment',ha,...
-                'VerticalAlignment',va ...
-            );
-        else
-            set(obj.uTitl.tbox,...
-                'String',txt,'FontSize',fontsize,...
-                'HorizontalAlignment',ha,...
-                'VerticalAlignment',va);
-
-            set(obj.uTitl.ax,'Position',pos);
-        end
-        function axisfun(obj,varargin)
-            cellfun(fun,obj.axis,varargin{:});
-        end
-    end
-    function suptitle(obj,txt,fontsize,loc)
-        if nargin < 2 || isempty(txt)
-            txt=obj.supTxt;
-        end
-        if isempty(txt)
-            return
-        end
-        if nargin < 3 || isempty(fontsize)
-            fontsize=obj.supFontSize;
-        end
-        if nargin < 4 || isempty(loc)
-            loc=obj.supLoc;
-        end
-        if Axis.isInvalid(obj.sTitl.ax)
-            obj.sTitl.ax=axes();
-        else
-            axes(obj.sTitl.ax);
-        end
-        switch loc
-            case 'top'
-                pos=[0, 1, 1, 0];
-                ha='Center';
-                va='top';
-                tpos=[0.5 1];
-            case 'topleft'
-                pos=[0, 1, 1, 0];
-                ha='Left';
-                va='top';
-                tpos=[0.01 0];
-            case 'bottom'
-                pos=[0, 0, 1, 0];
-                ha='Center';
-                va='bottom';
-                tpos=[0.5,0];
-            case 'bottomleft'
-                pos=[0, 0, 1, 0];
-                ha='Left';
-                va='bottom';
-                tpos=[0.01,0];
-        end
-        if Axis.isInvalid(obj.sTitl.tbox)
-            set(obj.sTitl.ax,...
-                'Position',pos,...
-                'Color','None',...
-                'XColor','None',...
-                'YColor','None');
-
-            obj.sTitl.tbox=text(tpos(1),tpos(2),txt,...
-                'FontSize',fontsize,...
-                'HorizontalAlignment',ha,...
-                'VerticalAlignment',va ...
-            );
-        else
-            set(obj.sTitl.tbox,...
-                'String',txt,'FontSize',fontsize,...
-                'HorizontalAlignment',ha,...
-                'VerticalAlignment',va);
-
-            set(obj.sTitl.ax,'Position',pos);
-        end
-        function axisfun(obj,varargin)
-            cellfun(fun,obj.axis,varargin{:});
-        end
-    end
-    %function obj=get_margins(obj)
-    %end
-
 end
-methods(Static)
-    function test2()
-        close all;
-        o=SubPlot([8,3]);
-        o.selectAll;
-        o.suptitle('this1',[],'top');
-        o.suptitle('this2',[],'bottom');
-    end
-    function test()
-        close all;
-        o=SubPlot([8,3]);
-        %o.iMargin=[0 0 0 0];
-        o.sel([8,1]);
-        plot(3,3);
-
-        o.sel([8,2]);
-        plot(3,3);
-
-        o.sel([8,3]);
-        plot(3,3);
-
-        o.sel([7,3]);
-        plot(3,3);
-
-        o.sel([1,2],1,1);
-        plot(8,8);
-
-        o.suptitle('this');
-
-
-        %o.sel([3,2],2,2)
-        %plot(8,8)
+methods(Static,Hidden)
+    function out=logical2onoff(varargin)
+        if nargin == 2
+            in=varargin{2};
+        else
+            in=varargin{1};
+        end
+        if in
+            out='on';
+        else
+            out='off';
+        end
     end
 end
 end
