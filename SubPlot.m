@@ -4,8 +4,8 @@ classdef SubPlot < handle & ChildSetter & SubPlot_AxesL & SubPlot_Tests_
 %:   bZ
 %:   bYY
 %:
-%:  bXBy
-%:  bYCtr
+%:  xBy
+%:  yCtr
 properties
     f
     n
@@ -33,6 +33,7 @@ properties
     bgColor
     bZ % XXX
     bYY
+    bC
 
     %- MARGIN
     iUnits
@@ -42,8 +43,8 @@ properties
     iMargin
     oMargin
     %
-    subMargin
-    supMargin
+    uMargin
+    sMargin
     %
     lMargin
     rMargin
@@ -54,62 +55,73 @@ properties
     yMargin
     xxMargin
     yyMargin
+    cMargin
     %
-    xticksMargin
-    yticksMargin
-    xxticksMargin
-    yyticksMargin
-    zticksMargin
+    xtMargin
+    ytMargin
+    xxtMargin
+    yytMargin
+    ztMargin
+    ctMargin
 
     % XXX RM?
-    tBMargin % top or bottom
-    rBMargin % left or right
-    xxBMargin
+    tMarginB % top or bottom
+    rMarginB % left or right
+    xxMarginB
 
     %- Flag
-    bSupLabel
-    bSubLabel
+    sOn
+    uOn
     %
-    bLLabel
-    bRLabel
-    bTLabel
-    bBLabel
+    lOn
+    rOn
+    tOn
+    bOn
     %
-    bXLabel
-    bYLabel
-    bXXLabel
-    bYYLabel
-    bZLabel
+    xOn
+    yOn
+    xxOn
+    yyOn
+    zOn
+    cOn
     %
-    bXTicks
-    bYTicks
-    bXXTicks
-    bYYTicks
-    bZTicks
+    xtOn
+    ytOn
+    xxtOn
+    yytOn
+    ztOn
+    ctOn
 
     %- By
     % NOTE GENERAL IF OTHERS ARE EMPTY
-    bXBy
-    bYBy
-    bXXBy
-    bYYBy
+    xBy
+    yBy
+    xxBy
+    yyBy
+    zBy
+    cBy
 
-    bXTicksBy
-    bYTicksBy
-    bXXTicksBy
-    bYYTicksBy
+    xtBy
+    ytBy
+    xxtBy
+    yytBy
+    ztBy
+    ctBy
 
     %- bCtr
     % NOTE GENERAL IF OTHERS ARE EMPTY
-    bXCtr
-    bYCtr
-    bXXCtr
-    bYYCtr
+    xCtr
+    yCtr
+    xxCtr
+    yyCtr
+    zCtr
+    cCtr
 
-    bXTicksCtr
-    bYTicksCtr
-    bXXTicksCtr
-    bYYTicksCtr
+    xtCtr
+    ytCtr
+    xxtCtr
+    yytCtr
+    ctCtr
 
 
    %- plot axes properties
@@ -133,6 +145,7 @@ properties
     yDir
     yyDir
     zDir
+    cDir
     %
     ylims
     yylims
@@ -140,20 +153,21 @@ properties
     zlims
     clims
     %
-    xticks
-    yticks
-    yyticks
-    zticks
-    cticks
+    xt
+    yt
+    yyt
+    zt
+    ct
     %
-    xticklabels
-    yticklabels
-    yyticklabels
-    zticklabels
-    cticklabels
+    xtTxt
+    xxtTxt
+    ytTxt
+    yytTxt
+    ztTxt
+    ctTxt
 
     %- General/Fallback
-    SuFontSize
+    SUFontSize
     RCFontSize
     XYFontSize
     ticksFontSize
@@ -162,8 +176,8 @@ properties
 end
 properties(SetObservable)
     % TXT
-    supTxt
-    subTxt
+    sTxt
+    uTxt
     %
     rTxt %row/right
     lTxt %left row
@@ -172,27 +186,28 @@ properties(SetObservable)
     %
     xTxt
     yTxt
-    zTxt
     xxTxt
     yyTxt
+    zTxt
+    cTxt
     %
-    lBTxt
-    rBTxt
-    tBTxt
-    bBTxt
+    lTxtB
+    rTxtB
+    tTxtB
+    bTxtB
 
     % LOC
-    supLoc % top*
-    subLoc % bottom*
+    sLoc % top*
+    uLoc % bottom*
     % others are intrinsic
 
     % Color
-    yTxtyColor
     yTxtColor
+    yyTxtColor
 
     % fonts
-    supFontSize
-    subFontSize
+    sFontSize
+    uFontSize
     %
     tFontSize
     bFontSize
@@ -203,16 +218,19 @@ properties(SetObservable)
     yFontSize
     xxFontSize
     yyFontSize
+    cFontSize
     %
-    xticksFontSize
-    yticksFontSize
-    xxticksFontSize
-    yyticksFontSize
+    xtFontSize
+    ytFontSize
+    xxtFontSize
+    yytFontSize
+    ctFontSize
 
 
 
 end
 properties(Hidden)
+
     bTest
     initFlag=1
     Rs
@@ -226,6 +244,7 @@ properties(Hidden)
     ax
     axl % lines
     axb % background
+    axc % colorbar
     axib % innerbackground
     axibp % innerbackground plot
     bVisible
@@ -243,21 +262,22 @@ properties(Hidden)
 
     % bFlags
     bYY_
+    bC_
     bZ_
-    bSuplabel_
-    bSublabel_
-    bLLabel_
-    bRLabel_
-    bTLabel_
-    bBLabel_
-    bYYLabel_
-    bXXLabel_
-    bXLabel_
-    bYLabel_
-    bXTicks_
-    bYTicks_
-    bYYTicks_
-    bXXTicks_
+    bS_
+    bU_
+    lOn_
+    rOn_
+    tOn_
+    bOn_
+    yyOn_
+    xxOn_
+    xOn_
+    yOn_
+    xtOn_
+    ytOn_
+    yytOn_
+    xxtOn_
 
     titleBasePos_
 
@@ -341,6 +361,7 @@ methods(Static)
            'bTest',false,bBE;
            'bYY',[],'';
            'bZ',[],'';
+           'bC',[],'';
            'bHold',false,'';
            'bgColor',[1 1 1],'';
            'bSelectAll',false,'';
@@ -357,33 +378,37 @@ methods(Static)
            'yyedge',[1 1],bN;
 
            %% By
-           'bXBy',true,bB;
-           'bYBy',true,bB;
-           'bXXBy',true,bB;
-           'bYYBy',true,bB;
+           'xBy',true,bB;
+           'yBy',true,bB;
+           'xxBy',true,bB;
+           'yyBy',true,bB;
+           'cBy',true,bB;
            %
-           'bXTicksBy',[],bBE;
-           'bYTicksBy',[],bBE;
-           'bXXTicksBy',[],bBE;
-           'bYYTicksBy',[],bBE;
+           'xtBy',[],bBE;
+           'ytBy',[],bBE;
+           'xxtBy',[],bBE;
+           'yytBy',[],bBE;
+           'ctBy',[],bBE;
 
            %% Ctr
-           'bXCtr',true,bB;
-           'bYCtr',true,bB;
-           'bXXCtr',true,bB;
-           'bYYCtr',true,bB;
+           'xCtr',true,bB;
+           'yCtr',true,bB;
+           'xxCtr',true,bB;
+           'yyCtr',true,bB;
+           'cCtr',true,bB;
            %
-           'bXTicksCtr',[],bBE;
-           'bYTicksCtr',[],bBE;
-           'bXXTicksCtr',[],bBE;
-           'bYYTicksCtr',[],bBE;
+           'xtCtr',[],bBE;
+           'ytCtr',[],bBE;
+           'xxtCtr',[],bBE;
+           'yytCtr',[],bBE;
+           'ctCtr',[],bBE;
 
            %% - Margin
            'iMargin',[],'';
            'oMargin',[],'';
 
-           'subMargin',1,bN;
-           'supMargin',1,bN;
+           'uMargin',1,bN;
+           'sMargin',1,bN;
            %
            'tMargin',1,bN;
            'bMargin',1,bN;
@@ -394,41 +419,46 @@ methods(Static)
            'yMargin',1,bN;
            'yyMargin',1,bN;
            'xxMargin',1,bN;
+           'cMargin',1,bN;
             %
-           'xticksMargin',1,bN;
-           'yticksMargin',1,bN;
-           'yyticksMargin',1,bN;
+           'xtMargin',1,bN;
+           'ytMargin',1,bN;
+           'yytMargin',1,bN;
+           'ztMargin',1,bN;
+           'ctMargin',1,bN;
 
 
            % RM?
-           'tBMargin',0,bN;
-           'rBMargin',0,bN;
-           'xxBMargin',0,bN;
+           'tMarginB',0,bN;
+           'rMarginB',0,bN;
+           'xxMarginB',0,bN;
 
            %- Labels
            %%  Flags
-           'bSupLabel',false,bB;
-           'bSubLabel',false,bB;
+           'sOn',false,bB;
+           'uOn',false,bB;
            %
-           'bLLabel',[],bB;
-           'bRLabel',[],bB;
-           'bTLabel',[],bB;
-           'bBLabel',[],bB;
+           'lOn',[],bB;
+           'rOn',[],bB;
+           'tOn',[],bB;
+           'bOn',[],bB;
            %
-           'bXLabel',[],bB;
-           'bYLabel',[],bB;
-           'bXXLabel',[],bB;
-           'bYYLabel',[],bB;
-           'bZLabel',[],bB;
+           'xOn',[],bB;
+           'yOn',[],bB;
+           'xxOn',[],bB;
+           'yyOn',[],bB;
+           'zOn',[],bB;
+           'cOn',[],bB;
            %
-           'bXTicks',true,bB;
-           'bYTicks',true,bB;
-           'bXXTicks',[],bB;
-           'bYYTicks',[],bB;
+           'xtOn',true,bB;
+           'ytOn',true,bB;
+           'xxtOn',[],bB;
+           'yytOn',[],bB;
+           'ctOn',[],bB;
 
            %% txt
-           'supTxt',[],'';
-           'subTxt',[],'';
+           'sTxt',[],'';
+           'uTxt',[],'';
            %
            'lTxt' ,[],'';
            'rTxt' ,[],'';
@@ -439,32 +469,34 @@ methods(Static)
            'yTxt' ,[],'';
            'xxTxt',[],'';
            'yyTxt',[],'';
+           'cTxt',[],'';
 
            %% base txt
-           'lBTxt',[],'';
-           'rBTxt',[],'';
-           'tBTxt',[],'';
-           'bBTxt',[],'';
+           'lTxtB',[],'';
+           'rTxtB',[],'';
+           'tTxtB',[],'';
+           'bTxtB',[],'';
 
            %% fontsize
-           'supFontSize',[],'';
-           'subFontSize',[],'';
+           'sFontSize',[],'';
+           'uFontSize',[],'';
            'tFontSize',[],'';
            'bFontSize',[],'';
            'lFontSize',[],'';
            'rFontSize',[],'';
            'xFontSize',[],'';
            'yFontSize',[],'';
+           'cFontSize',[],'';
 
            %% fallback fontsizes
-           'SuFontSize',40,'';
+           'SUFontSize',40,'';
            'RCFontSize',22,'';
            'XYFontSize',22,'';
            'ticksFontSize',18,'';
 
            %% txt loc
-           'supLoc','top','';
-           'subLoc','bottom','';
+           'sLoc','top','';
+           'uLoc','bottom','';
 
            %- plot axes
            'lineWidth',2,'';
@@ -487,6 +519,7 @@ methods(Static)
            'yDir', 'normal','';
            'yyDir', 'normal','';
            'zDir', 'normal','';
+           'cDir', 'normal','';
            %
            'ylims',[],'';
            'yylims',[],'';
@@ -494,17 +527,17 @@ methods(Static)
            'zlims',[],'';
            'clims',[],'';
            %
-           'yticks',[],'';
-           'yyticks',[],'';
-           'xticks',[],'';
-           'zticks',[],'';
-           'cticks',[],'';
+           'yt',[],'';
+           'yyt',[],'';
+           'xt',[],'';
+           'zt',[],'';
+           'ct',[],'';
            %
-           'yticklabels',[],'';
-           'yyticklabels',[],'';
-           'xticklabels',[],'';
-           'zticklabels',[],'';
-           'cticklabels',[],'';
+           'ytTxt',[],'';
+           'yytTxt',[],'';
+           'xtTxt',[],'';
+           'ztTxt',[],'';
+           'ctTxt',[],'';
 
         };
     end
@@ -582,9 +615,11 @@ methods
         curs=[n,m];
         z=zeros(obj.RC);
         o=ones(obj.RC);
-        bXBy=z;
-        bYBy=z;
-        bYYBy=z;
+
+        T=struct();
+        T.xBy=z;
+        T.yBy=z;
+        T.yyBy=z;
         [X,Y]=meshgrid(1:obj.RC(2),1:obj.RC(1));
 
 
@@ -593,86 +628,75 @@ methods
         yyedge=obj.yyedge;
 
         % By
-        bXBy(xedge(2),:)=true;
-        bYBy(:,yedge(1))=true;
-        bYYBy(:,yyedge(1))=true;
-        bXBy=bXBy & (X >= obj.xedge(1));
-        bYBy=bYBy & (Y >= obj.yedge(2));
-        bYYBy=bYYBy & (Y >= obj.yyedge(2));
-        bXBy=flipud(bXBy);
-        bYYBy=fliplr(bYYBy);
+        T.xBy(xedge(2),:)=true;
+        T.yBy(:,yedge(1))=true;
+        T.yyBy(:,yyedge(1))=true;
+        T.xBy=  T.xBy  & (X >= obj.xedge(1));
+        T.yBy=  T.yBy  & (Y >= obj.yedge(2));
+        T.yyBy= T.yyBy & (Y >= obj.yyedge(2));
+        T.xBy=flipud(T.xBy);
+        T.yyBy=fliplr(T.yyBy);
+        T.cBy=T.yyBy;
+
+        T.xtBy=T.xBy;
+        T.ytBy=T.yBy;
+        T.yytBy=T.yyBy;
+        T.ctBy=T.cBy;
+
+        % XXX
+        bYMod=true;
+        bXMod=true;
 
         % Ctr
-        bYCtr=Y==ceil(obj.RC(1)/2);
-        bXCtr=X==ceil(obj.RC(2)/2);
-        bYYCtr=Y==ceil(obj.RC(1)/2);
+        r=mod(obj.RC,2)==0;
+        if bYMod || r(1)
+            T.yCtr=Y==obj.RC(1);
+            T.yyCtr=Y==obj.RC(1);
+        else
+            T.yCtr=Y==ceil(obj.RC(1)/2);
+            T.yyCtr=Y==ceil(obj.RC(1)/2);
+        end
+        T.cCtr=Y==1;
+        if bXMod || r(2)
+            T.xCtr=X==1;
+        else
+            T.xCtr=X==ceil(obj.RC(2)/2);
+        end
+        T.xtCtr=T.xCtr;
+        T.ytCtr=T.yCtr;
+        T.yytCtr=T.yyCtr;
+        T.ctCtr=T.cCtr;
 
 
         obj.D=struct();
-        %obj.D.bX=bX;
-        %obj.D.nX=nX;
-        %obj.D.bY=bY;
-        %obj.D.nY=nY;
+        flds={'x','y','yy','c',...
+              'xt','yt','yyt','ct'};
+        eind=[2 1 1 1 ...
+              2 1 1 1];
 
-        bXBy_ =obj.get_bBy('x');
-        bYBy_ =obj.get_bBy('y');
-        bYYBy_ =obj.get_bBy('yy');
-        %
-        bXTBy_=obj.get_bBy('xticks');
-        bYTBy_=obj.get_bBy('yticks');
-        bYYTBy_=obj.get_bBy('yyticks');
+        for i = 1:length(flds)
+            fld=flds{i};
+            bFld=[fld 'By'];
+            cFld=[fld 'Ctr'];
+            oFld=[fld 'On'];
+            OFld=[fld 'On_'];
+            eFld=[fld 'Even'];
 
-        bXCtr_ =obj.get_bCtr('x');
-        bYCtr_ =obj.get_bCtr('y');
-        bYYCtr_ =obj.get_bCtr('yy');
-        %
-        bXTCtr_=obj.get_bCtr('xticks');
-        bYTCtr_=obj.get_bCtr('yticks');
-        bYYTCtr_=obj.get_bCtr('yyticks');
+            % general flag
+            By_=obj.get_bBy(fld);
+            Ctr_=obj.get_bCtr(fld);
+            obj.D.(OFld)=By_ || Ctr_;
 
-        obj.D.bXBy =bXBy  | (~bXBy_*o);
-        obj.D.bYBy =bYBy  | (~bYBy_*o);
-        obj.D.bYYBy =bYYBy  | (~bYYBy_*o);
-        %
-        obj.D.bXCtr=bXCtr | (~bXCtr_*o);
-        obj.D.bYCtr=bYCtr | (~bYCtr_*o);
-        obj.D.bYYCtr=bYYCtr | (~bYYCtr_*o);
+            % combine
+            obj.D.(bFld)= T.(bFld) | (~By_ * o);
+            obj.D.(cFld)= T.(cFld) | (~Ctr_ * o);
+            obj.D.(oFld)=obj.D.(bFld) & obj.D.(cFld);
 
-        obj.D.bXTicksBy =bXBy  | (~bXTBy_*o);
-        obj.D.bYTicksBy =bYBy  | (~bYTBy_*o);
-        obj.D.bYYTicksBy =bYYBy  | (~bYYTBy_*o);
-        %
-        obj.D.bXTicksCtr=bXCtr | (~bXTCtr_*o);
-        obj.D.bYTicksCtr=bYCtr | (~bYTCtr_*o);
-        obj.D.bYYTicksCtr=bYYCtr | (~bYYTCtr_*o);
 
-        obj.D.bX=obj.D.bXBy & obj.D.bXCtr;
-        obj.D.bY=obj.D.bYBy & obj.D.bYCtr;
-        obj.D.bYY=obj.D.bYYBy & obj.D.bYYCtr;
-        %
-        obj.D.bXTicks=obj.D.bXTicksBy & obj.D.bXTicksCtr;
-        obj.D.bYTicks=obj.D.bYTicksBy & obj.D.bYTicksCtr;
-        obj.D.bYYTicks=obj.D.bYYTicksBy & obj.D.bYYTicksCtr;
+            % even
+            obj.D.(eFld)=r(eind(i)) & Ctr_;
+        end
 
-        obj.D.bX_=bXBy_ || bXCtr_;
-        obj.D.bY_=bYBy_ || bYCtr_;
-        obj.D.bYY_=bYYBy_ || bYYCtr_;
-        %
-        obj.D.bXTicks_=bXTBy_ || bXTCtr_;
-        obj.D.bYTicks_=bYTBy_ || bYTCtr_;
-        obj.D.bYYTicks_=bYYTBy_ || bYYTCtr_;
-
-        r=mod(obj.RC,2)==0;
-        obj.D.bYEven=r(1)  & bYCtr_;
-        obj.D.bYYEven=r(1) & bYYCtr_;
-        obj.D.bXEven=r(2)  & bXCtr_;
-
-        obj.D.bYTicksEven=r(1)  & bYTCtr_;
-        obj.D.bYYTicksEven=r(1) & bYYTCtr_;
-        obj.D.bXTicksEven=r(2)  & bXTCtr_;
-
-        % TODO YY
-        %D.bYYBy=bYYBy;
     end
 end
 methods(Access=protected)
@@ -689,9 +713,11 @@ methods(Access=protected)
     end
     function init_axes(obj);
         obj.ax=cell(obj.n,1);
+        obj.axc=cell(obj.n,1);
         obj.bVisible=false(obj.n,1);
         bYY_=obj.bYY_;
         bZ_=obj.bZ_;
+        bC_=obj.bC_;
 
         % main axes
         if obj.bZ_
@@ -704,90 +730,108 @@ methods(Access=protected)
             args={};
         end
         yyargs={};
+        cargs={};
 
         % LIMS
         if ~isempty(obj.ylims)
             args=['YLim',obj.ylims,'YLimMode','manual'];
         end
         if ~isempty(obj.xlims)
-            args=['XLim',obj.zlims,'XLimMode','manual'];
+            args=['XLim',obj.xlims,'XLimMode','manual'];
         end
         if ~isempty(obj.zlims)
             args=['ZLim',obj.zlims,'ZLimMode','manual'];
         end
+        if ~isempty(obj.yylims)
+            yargs=['YLim',obj.yylims,'ZLimMode','manual'];
+        end
+        if ~isempty(obj.clims)
+            cargs=['Limits',obj.clims,'LimitsMode','manual'];
+        end
 
         % TICKS
-        if ~isempty(obj.yticks)
-            args=['YTick',obj.yticks,'YTickMode','manual'];
-            yBlnk=repmat({''},1,numel(obj.yticks));
-            yt=cellfun(@num2str,num2cell(obj.yticks));
+        if ~isempty(obj.yt)
+            args=[args 'YTick',obj.yt,'YTickMode','manual'];
+            yBlnk=repmat({''},1,numel(obj.yt));
+            yt=cellfun(@num2str,num2cell(obj.yt));
         else
-            yt=obj.yticklabels;
+            yt=obj.ytTxt;
         end
-        if ~isempty(obj.xticks)
-            args=['XTick',obj.xticks,'XTickMode','manual'];
-            xBlnk=repmat({''},1,numel(obj.xticks));
-            xt=cellfun(@num2str,num2cell(obj.xticks));
+        if ~isempty(obj.xt)
+            args=[args 'XTick',obj.xt,'XTickMode','manual'];
+            xBlnk=repmat({''},1,numel(obj.xt));
+            xt=cellfun(@num2str,num2cell(obj.xt));
         else
-            xt=obj.xticklabels;
+            xt=obj.xtTxt;
         end
 
-        if ~isempty(obj.zticks)
-            args=['ZTick',obj.zticks,'ZTickMode','manual'];
-            zBlnk=repmat({''},1,numel(obj.zticks));
-            zt=cellfun(@num2str,num2cell(obj.zticks));
+        if ~isempty(obj.zt)
+            args=[args 'ZTick',obj.zt,'ZTickMode','manual'];
+            zBlnk=repmat({''},1,numel(obj.zt));
+            zt=cellfun(@num2str,num2cell(obj.zt));
         elseif obj.bZ_
-            zt=obj.zticklabels;
+            zt=obj.ztTxt;
         else
             zt=[];
         end
 
-        yyargs={};
-        if ~isempty(obj.yyticks)
-            yyargs=['YTick',obj.yyticks,'YTickMode','manual'];
-            yyBlnk=repmat({''},1,numel(obj.yyticks));
-            yyt=cellfun(@num2str,num2cell(obj.yyticks));
+        if ~isempty(obj.yyt)
+            yyargs=[yyargs 'YTick',obj.yyt,'YTickMode','manual'];
+            yyBlnk=repmat({''},1,numel(obj.yyt));
+            yyt=cellfun(@num2str,num2cell(obj.yyt));
         elseif bYY_
-            yyt=obj.yyticklabels;
+            yyt=obj.yytTxt;
         else
             yyt=[];
+        end
+        if ~isempty(obj.ct)
+            crgs=[cargs 'Ticks',obj.yyt,'TicksMode','manual'];
+            cBlnk=repmat({''},1,numel(obj.yyt));
+            ct=cellfun(@num2str,num2cell(obj.yyt));
+        elseif bC_
+            ct=obj.cTxt;
+        else
+            ct=[];
         end
 
         % XXX
         % xtick/ytick
-        % yticklabels/yticklabels
+        % ytTxt/ytTxt
         % callback
 
 
-        bY=obj.get_b('yticks');
-        bX=obj.get_b('Xticks');
-        bYY=obj.get_b('yyticks');
+        bY=obj.get_b('yt');
+        bX=obj.get_b('xt');
+        bYY=obj.get_b('yyt');
+        bC=obj.bC_;
         D=obj.D;
 
         for i = 1:obj.n
 
             %% left
             sargs={};
-            % yticklabels
-            if D.bYTicks_ && D.bYTicks(i)
+            % ytTxt
+            if D.ytOn_ && D.ytOn(i)
                 if ~isempty(yt)
                     sargs=[sargs,'YTickLabelMode','manual','YTickLabel',yt];
                 end
-                if D.bYTicksEven
+                if D.ytEven
                 end
-            elseif D.bYTicks_
+            elseif D.ytOn_
                 sargs=[sargs,'YTickLabelMode','manual','YTickLabel',{[]}];
             end
-            % xticklabels
-            if D.bXTicks_ && D.bXTicks(i)
+            % xtTxt
+            if D.xtOn_ && D.xtOn(i)
                 if ~isempty(xt)
                     sargs=[sargs,'XTickLabelMode','manual','XTickLabel',xt];
                 end
-                if D.bXTicksEven
+                if D.xtEven
                 end
-            elseif D.bXTicks_
+            elseif D.xtOn_
                 sargs=[sargs,'XTickLabelMode','manual','XTickLabel',{[]}];
             end
+            % cTxt
+
 
 
             obj.ax{i}=axes(...
@@ -810,19 +854,42 @@ methods(Access=protected)
             );
             %enableDefaultInteractivity(obj.ax{i});
 
+            sargs={};
+            % ctTxt
+            if bC
+                if D.ctOn_ && D.ctOn(i)
+                    if ~isempty(xt)
+                        sargs=[sargs,'TickLabelsMode','manual','TickLabels',ct];
+                    end
+                    if D.xtEven
+                    end
+                elseif D.xtOn_
+                    sargs=[sargs,'TickLabelsMode','manual','XTickLabels',{[]}];
+                end
+
+                if (D.ctOn_ && D.ctOn(i)) || (D.cOn_ && D.cOn(i))
+                    obj.axc{i}=colorbar(...
+                        'AxisLocation','in',...
+                        'Position',obj.Pos.c(i,:),...
+                        cargs{:}...
+                    );
+                    obj.axc{i}.YAxisLocation='right';
+                end
+            end
+
             %% right
             if ~bYY
                 continue;
             end
             sargs={};
 
-            if D.bYYTicks_ && D.bYYTicks(i)
+            if D.yytOn_ && D.yytOn(i)
                 if ~isempty(yyt)
                     sargs=[sargs,'YTickLabelMode','manual','YTickLabel',yyt];
                 end
-                if D.bYYTicksEven
+                if D.yytEven
                 end
-            elseif D.bYYTicks_
+            elseif D.yytOn_
                 sargs=[sargs 'YTickLabelMode','manual','YTickLabel',{[]}];
             end
 
@@ -966,7 +1033,14 @@ methods
         if ~isempty(obj.bYY)
             out=obj.bYY;
         else
-            out=obj.get_b('yy') || obj.get_b('yyticks');
+            out=obj.get_b('yy') || obj.get_b('yyt');
+        end
+    end
+    function out=get.bC_(obj)
+        if ~isempty(obj.bC)
+            out=obj.bC;
+        else
+            out=obj.get_b('c') || obj.get_b('ct');
         end
     end
     function out=get.bZ_(obj)
@@ -977,7 +1051,7 @@ methods
         if ~isempty(obj.bZ)
             out=obj.bZ;
         else
-            out=obj.get_b('z') || obj.get_b('zticks');
+            out=obj.get_b('z') || obj.get_b('zt');
         end
     end
     function sel(obj,varargin)
@@ -1108,6 +1182,10 @@ methods(Access=protected)
         P.iTp=P.iT;
         P.iT(1)=P.iT(1)+oMN(1);
         P.iT(2)=P.iT(2)+oMN(4);
+
+        P.c=P.i;
+        P.c(:,1)=P.c(:,1)+P.c(:,3)+obj.m.yyt;
+        P.c(:,3)=obj.m.c;
         obj.Pos=P;
 
         iFWH=fWH.*obj.Pos.iT(3:4);
@@ -1302,6 +1380,7 @@ methods(Access=protected)
     end
     function set_sub_pos(obj,i,h,w)
         pos=obj.Pos.i(i,:);
+        posc=obj.Pos.c(i,:);
         if nargin < 3
             h=obj.Hs(i);
             w=obj.Ws(i);
@@ -1313,6 +1392,9 @@ methods(Access=protected)
 
 %'Units','normalized',
         set(obj.ax{i},'Position',pos);
+        if obj.D.ctOn_
+            set(obj.axc{i},'Position',posc);
+        end
         obj.Hs(i)=h;
         obj.Ws(i)=w;
     end
@@ -1343,26 +1425,20 @@ methods(Hidden)
         end
 
         % base fld
-        if numel(name)==1
-            bfld=name(1);
-        elseif name(1)==name(2);
-            bfld=name(1:2);
-        else
-            bfld=name(1);
-        end
-        tfld=[bfld 'ticks'];
+        bfld=strrep(name,'t','');
+        tfld=[bfld 't'];
 
         % eval fld
-        bFld=['b' upper(bfld) ffld];
-        tFld=['b' upper(bfld) 'Ticks' ffld];
+        bFld=[bfld ffld];
+        tFld=[bfld 't' ffld];
 
         if ~isempty((nffld))
-            nbFld=['b' upper(bfld) nffld];
-            ntFld=['b' upper(bfld) 'Ticks' nffld];
+            nbFld=[bfld nffld];
+            ntFld=[bfld 't' nffld];
         end
 
         % actual
-        if contains(name,'tick');
+        if numel(name) > 1 && endsWith(name,'t');
             fld=tfld;
             ofld=bFld;
 
@@ -1404,8 +1480,7 @@ methods(Hidden)
         elseif strcmp(name,'iM')
             ffld='fontSize';
         else
-            [fld,ufld]=obj.get_fld(name);
-            ffld=[fld 'FontSize'];
+            ffld=[name 'FontSize'];
         end
         out=obj.(ffld);
         if ~isempty(out)
@@ -1414,12 +1489,12 @@ methods(Hidden)
 
         switch name
         case {'s','u'}
-            out=obj.SuFontSize;
+            out=obj.SUFontSize;
         case {'l','r','t','b'}
             out=obj.RCFontSize;
         case {'x','y','xx','yy'}
             out=obj.XYFontSize;
-        case {'xticks','yticks','xxticks','yyticks'}
+        case {'xt','yt','xxt','yyt'}
             out=obj.ticksFontSize;
         case {'iM','oM'}
             out=obj.fontSize;
@@ -1428,44 +1503,22 @@ methods(Hidden)
             out=obj.fontSize;
         end
     end
-    function [fld,ufld]=get_fld(obj,name)
-        if numel(name)>=2 && name(1)==name(2)
-            fld=name(1:2);
-            ufld=upper(fld);
-        elseif name=='s'
-            fld='sup';
-            ufld='Sup';
-        elseif name=='u'
-            fld='sub';
-            ufld='Sub';
-        else
-            fld=name(1);
-            ufld=upper(fld);
-        end
-        if endsWith(name,'ticks')
-            fld=[fld 'ticks'];
-            ufld=[ufld 'Ticks'];
-        else
-            ufld=[ufld 'Label'];
-        end
-    end
     function out=get_b(obj,name)
-        [fld,ufld]=obj.get_fld(name);
-        bfld=['b' ufld];
-        if endsWith(name,'ticks')
-            if strcmp(name,'yticks') && obj.iMargin(1) > 0
+        bfld=[ name 'On'];
+        if numel(name) > 1 && endsWith(name,'t')
+            if strcmp(name,'yt') && obj.iMargin(1) > 0
                 out=false;
-            elseif strcmp(name,'yyticks') && obj.iMargin(2) > 0
+            elseif strcmp(name,'yyt') && obj.iMargin(2) > 0
                 out=false;
-            elseif strcmp(name,'xxticks') && obj.iMargin(3) > 0
+            elseif strcmp(name,'xxt') && obj.iMargin(3) > 0
                 out=false;
-            elseif strcmp(name,'xticks') && obj.iMargin(4) > 0
+            elseif strcmp(name,'xt') && obj.iMargin(4) > 0
                 out=false;
             else
                 out=obj.(bfld);
             end
         else
-            lfld=[fld 'Txt'];
+            lfld=[name 'Txt'];
             if ~isempty(obj.(bfld))
                 out=obj.(bfld);
             else
@@ -1481,20 +1534,19 @@ methods(Hidden)
             bRaw=false;
         end
         units=obj.get_units(fld);
-        fldn=obj.get_fld(fld);
         if any(strcmp(fld,{'iM','oM'}))
-            Fld=[fldn(1) 'Margin'];
+            Fld=[fld(1) 'Margin'];
         else
-            Fld=[fldn 'Margin'];
+            Fld=[fld 'Margin'];
         end
         iM=obj.(Fld);
 
         if bRaw
             return
         end
-        if any(strcmp(fld,{'yticks','yyticks'}))
+        if any(strcmp(fld,{'yt','yyt'}))
             iM=iM+1;
-        elseif any(strcmp(fld,{'xticks','xxticks'}))
+        elseif any(strcmp(fld,{'xt','xxt','ct'}))
             iM=iM+.15;
         end
         if strcmp(units,'characters')
@@ -1527,31 +1579,31 @@ methods(Access=protected)
     end
     function get_flds(obj)
         % flds
-        %flds={'xticks';'yticks';'xxticks';'yyticks';...
+        %flds={'xt';'yt';'xxt';'yyt';...
         %      'x';'y';'xx';'yy';...
         %      't';'b';'l';'r';...
         %      's';'u'};
         flds={...
-              'oT';'s';'t';'xx';'xxticks';'iT';... % GOOD
-              'oR';'r';'yy';'yyticks';'iR';... % GOOD
-              'iB';'xticks';'x';'b';'u';'oB';...  % GOOD
-              'iL';'yticks';'y';'l';'oL';...
+              'oT';'s';'t';'xx';'xxt';'iT';... % GOOD
+              'oR';'r';'yy';'ct';'c';'yyt';'iR';... % GOOD
+              'iB';'xt';'x';'b';'u';'oB';...  % GOOD
+              'iL';'yt';'y';'l';'oL';...
         };
 
-              %'yyticks';'yy';'r';...
+              %'yyt';'yy';'r';...
         N=numel(flds);
 
         % by flds
         bFlds=cell(N,1);
-        byFlds={'xticks','yticks','xxticks','yyticks',...
-                'x','y','xx','yy'};
+        byFlds={'xt','yt','xxt','yyt','ct'...
+                'x','y','xx','yy','c'};
         bBy=ismember(flds,byFlds);
 
 
         % rev flds
         rFlds=cell(N,1);
-        revFlds={'iL','yL','oL','iL','y','yy','l','r'};
-        nRevFlds={'yticks','yyticks'};
+        revFlds={'iL','yL','oL','iL','y','yy','l','r','c'};
+        nRevFlds={'yt','yyt','ct'};
         bRev=ismember(flds,revFlds);
         bNRev=ismember(flds,nRevFlds);
         rFlds(bRev)={'f'};
@@ -1560,10 +1612,10 @@ methods(Access=protected)
 
         % loc flds
         lFlds=cell(N,1);
-        topFlds={'oT','iT','xxticks','xx','t','s'};
-        botFlds={'oB','iB','xticks','x','b','u'};
-        leftFlds={'oL','iL','yticks','y','l'};
-        rightFlds={'oR','iR','yyticks','yy','r'};
+        topFlds={'oT','iT','xxt','xx','t','s'};
+        botFlds={'oB','iB','xt','x','b','u'};
+        leftFlds={'oL','iL','yt','y','l'};
+        rightFlds={'oR','iR','yyt','yy','r','ct','c'};
         lFlds(ismember(flds,topFlds))={'T'};
         lFlds(ismember(flds,botFlds))={'B'};
         lFlds(ismember(flds,leftFlds))={'L'};
@@ -1733,7 +1785,7 @@ methods(Hidden)
         %PaperOrientation
         %
         %PaperType
-        %'usletter' | 'uslegal' | 'tabloid' | 'a0' | 'a1' | 'a2' | 'a3' | 
+        %'usletter' | 'uslegal' | 'tabloid' | 'a0' | 'a1' | 'a2' | 'a3' |
         %
         %PaperUnits
         %'inches' | 'centimeters' | 'normalized' | 'points'

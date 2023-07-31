@@ -119,21 +119,19 @@ methods
             obj.dir=-1;
         end
 
-        %fld=obj.SP.get_fld(obj.name);
-        fld=obj.SP.get_fld(obj.name);
-        AFld=[fld 'Txt'];
+        AFld=[obj.name 'Txt'];
         if isprop(obj.SP,AFld)
             obj.AFld=AFld;
         end
         if obj.bSup
             BFld=AFld;
         else
-            BFld=[fld 'BTxt'];
+            BFld=[obj.name 'TxtB'];
         end
         if isprop(obj.SP,BFld)
             obj.BFld=BFld;
         end
-        CFld=[fld 'CTxt'];
+        CFld=[obj.name 'CTxt'];
         if isprop(obj.SP,CFld)
             obj.CFld=CFld;
         end

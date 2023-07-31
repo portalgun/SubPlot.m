@@ -29,9 +29,9 @@ methods
 %- INIT
     function init_AL(obj)
         obj.AL_construct();
-        obj.AL_get_flds();
-        obj.AL_set_setters();
-        obj.AL_first_update();
+        %obj.AL_get_flds();
+        %obj.AL_set_setters();
+        %obj.AL_first_update();
         obj.AL_set_position(); % Defined in SubPlot_AxesL
     end
     function AL_construct(obj);

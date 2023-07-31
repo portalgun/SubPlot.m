@@ -1,21 +1,4 @@
 classdef SubPlot_Tests_ < handle
-% SLOW
-% yyaxis
-% enable default interactivity
-%
-% TODO
-% By ticklabels
-% ctr ticklabels
-%
-% flip base side
-%  loc
-%
-%  Z
-%  C
-%    by rows or cols or none or all
-%
-%  'b' to 'on'
-%  sup loc
 
 properties
 end
@@ -27,94 +10,106 @@ methods(Static)
         bRC=[1 1 1 1];
         RCMargin=[2 2 2 2];
 
-        bXY=[1 1 1 1];
-        XYMargin=[1 1 1 1];
+        bXY=[1 1 1 0 1];
+        XYMargin=[1 1 1 1 1];
 
         bSu=[1 1];
         suMargin=[1 1];
 
         Siz=[5,8];
         Args={...
-            'bTest',false;
+            'bTest',true;
             'bSelectAll',true;
             'iMargin',iMargin;
             'oMargin',oMargin;
             ...
             'bYY',true;
-            ...
-            'bYCtr',true;
-            'bXCtr',true;
-            'bYBy',true;
-            'bXBy',true;
-            'bXXBy',true;
-            ...
-            'bXTicksBy',false;
-            'bYTicksBy',true;
-            'bYYTicksBy',true;
-            ...
-            'bXTicksCtr',true;
-            'bYTicksCtr',true;
-            'bYYTicksCtr',true;
+            'bZ',true;
             ...
             %% X
-            'bXLabel',bXY(1);
+            'xOn',bXY(1);
+            'xBy',true;
+            'xCtr',true;
             'xMargin',XYMargin(1);
             'xTxt','xTxt';
             %% Y
-            'bYLabel',bXY(2);
+            'yOn',bXY(2);
+            'yBy',true;
+            'yCtr',true;
             'yMargin',XYMargin(2);
             'yTxt','yTxt';
             %% XX
-            'bXXLabel',bXY(3);
+            'xxOn',bXY(3);
+            'xxBy',true;
+            'xxCtr',true;
             'xxMargin',XYMargin(3);
             'xxTxt','xxTxt';
             %% YY
-            'bYYLabel',bXY(4);
-            'yyMargin',XYMargin(4);;
+            'yyOn',bXY(4);
+            'yyBy',true;
+            'yyCtr',true;
+            'yyMargin',XYMargin(4);
             'yyTxt','yyTxt';
             ...
-            %% XTicks
-            'bXTicks',true;
-            'xticksMargin',1;
-            %% YTTicks
-            'bYTicks',true;
-            'yticksMargin',3;
+            %% C
+            'cOn',bXY(5);
+            'cBy',true;
+            'cCtr',true;
+            'cMargin',XYMargin(5);
+            'cTxt','cTxt';
             ...
+            %% XTicks
+            'xtOn',true;
+            'xtBy',false;
+            'xtCtr',true;
+            'xtMargin',1;
             %% YTTicks
-            'bYYTicks',true;
-            'yyticksMargin',3;
+            'ytOn',true;
+            'ytBy',true;
+            'ytCtr',true;
+            'ytMargin',3;
+            %% YTTicks
+            'yytOn',false;
+            'yytBy',true;
+            'yytCtr',true;
+            'yytMargin',3;
+            %% CTicks
+            'ctOn',true;
+            'ctBy',true;
+            'ctCtr',false;
+            'ctMargin',3;
             ...
             %% L
             % XXX
-            'bLLabel',bRC(1);
+            'lOn',bRC(1);
             'lMargin',RCMargin(1);
-            'lBTxt','lBTxt';
+            'lTxtB','lTxtB';
             'lTxt',{'lTxt 1','2','3','4','5'};
             %% R
             % XXX
-            'bRLabel',bRC(2);
+            'rOn',bRC(2);
             'rMargin',RCMargin(2);
-            'rBTxt','rBTxt';
+            'rTxtB','rTxtB';
             'rTxt',{'rTxt 1','2','3','4','5'};
             %% B
-            'bTLabel',bRC(3);
+            'tOn',bRC(3);
             'tMargin',RCMargin(3);
-            'tBTxt','tBTxt';
+            'tTxtB','tTxtB';
             'tTxt',{'1','2','3','4','5','6','7','8'};
             %% T
-            'bBLabel',bRC(4);
+            'bOn',bRC(4);
             'bMargin',RCMargin(4);
-            'bBTxt','bBTxt';
+            'bTxtB','bTxtB';
             'bTxt',{'1','2','3','4','5','6','7','8'};
             ...
             %% S
-            'bSupLabel',bSu(1);
-            'supMargin',suMargin(1);
-            'supTxt','supTxt';
+            'sOn',bSu(1);
+            'sMargin',suMargin(1);
+            'sTxt','sTxt';
             %% U
-            'bSubLabel',bSu(2);
-            'subMargin',suMargin(2);
-            'subTxt','subTxt';
+            'uOn',bSu(2);
+            'uMargin',suMargin(2);
+            'uTxt','uTxt';
         };
         Args=Args';
         SP=SubPlot(Siz,Args{:});
