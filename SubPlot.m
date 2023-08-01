@@ -4,8 +4,8 @@ classdef SubPlot < handle & ChildSetter & SubPlot_AxesL & SubPlot_Tests_
 %:   bZ
 %:   bYY
 %:
-%:  xBy
-%:  yCtr
+%:  xlBy
+%:  ylCtr
 properties
     f
     n
@@ -31,9 +31,7 @@ properties
     bSelectAll=false
     bLockAxes=true
     bgColor
-    bZ % XXX
-    bYY
-    bC
+
 
     %- MARGIN
     iUnits
@@ -43,19 +41,19 @@ properties
     iMargin
     oMargin
     %
-    uMargin
-    sMargin
+    ulMargin
+    slMargin
     %
-    lMargin
-    rMargin
-    tMargin
-    bMargin
+    llMargin
+    rlMargin
+    tlMargin
+    blMargin
     %
-    xMargin
-    yMargin
-    xxMargin
-    yyMargin
-    cMargin
+    xlMargin
+    ylMargin
+    xxlMargin
+    yylMargin
+    clMargin
     %
     xtMargin
     ytMargin
@@ -63,27 +61,29 @@ properties
     yytMargin
     ztMargin
     ctMargin
+    %
+    cMargin
 
     % XXX RM?
     tMarginB % top or bottom
     rMarginB % left or right
-    xxMarginB
+    xxlMarginB
 
     %- Flag
-    sOn
-    uOn
+    slOn
+    ulOn
     %
-    lOn
-    rOn
-    tOn
-    bOn
+    llOn
+    rlOn
+    tlOn
+    blOn
     %
-    xOn
-    yOn
-    xxOn
-    yyOn
-    zOn
-    cOn
+    xlOn
+    ylOn
+    xxlOn
+    yylOn
+    zlOn
+    clOn
     %
     xtOn
     ytOn
@@ -91,15 +91,19 @@ properties
     yytOn
     ztOn
     ctOn
+    %
+    cOn
+    zOn
+    yyOn
 
     %- By
     % NOTE GENERAL IF OTHERS ARE EMPTY
-    xBy
-    yBy
-    xxBy
-    yyBy
-    zBy
-    cBy
+    xlBy
+    ylBy
+    xxlBy
+    yylBy
+    zlBy
+    clBy
 
     xtBy
     ytBy
@@ -110,12 +114,12 @@ properties
 
     %- bCtr
     % NOTE GENERAL IF OTHERS ARE EMPTY
-    xCtr
-    yCtr
-    xxCtr
-    yyCtr
-    zCtr
-    cCtr
+    xlCtr
+    ylCtr
+    xxlCtr
+    yylCtr
+    zlCtr
+    clCtr
 
     xtCtr
     ytCtr
@@ -176,55 +180,59 @@ properties
 end
 properties(SetObservable)
     % TXT
-    sTxt
-    uTxt
+    slTxt
+    ulTxt
     %
-    rTxt %row/right
-    lTxt %left row
-    tTxt %ctr/col
-    bTxt
+    rlTxt %row/right
+    llTxt %left row
+    tlTxt %ctr/col
+    blTxt
     %
-    xTxt
-    yTxt
-    xxTxt
-    yyTxt
-    zTxt
-    cTxt
+    xlTxt
+    ylTxt
+    xxlTxt
+    yylTxt
+    zlTxt
+    clTxt
     %
-    lTxtB
-    rTxtB
-    tTxtB
-    bTxtB
+    llTxtB
+    rlTxtB
+    tlTxtB
+    blTxtB
 
     % LOC
     sLoc % top*
     uLoc % bottom*
     % others are intrinsic
+    clLoc
+    cLoc
+    ctLoc
 
     % Color
-    yTxtColor
-    yyTxtColor
+    ylTxtColor
+    yylTxtColor
 
     % fonts
-    sFontSize
-    uFontSize
+    slFontSize
+    ulFontSize
     %
-    tFontSize
-    bFontSize
-    rFontSize
-    lFontSize
+    tlFontSize
+    blFontSize
+    rlFontSize
+    llFontSize
     %
-    xFontSize
-    yFontSize
-    xxFontSize
-    yyFontSize
-    cFontSize
+    xlFontSize
+    ylFontSize
+    xxlFontSize
+    yylFontSize
+    clFontSize
     %
     xtFontSize
     ytFontSize
     xxtFontSize
     yytFontSize
     ctFontSize
+    cFontSize
 
 
 
@@ -270,10 +278,10 @@ properties(Hidden)
     rOn_
     tOn_
     bOn_
-    yyOn_
-    xxOn_
-    xOn_
-    yOn_
+    yylOn_
+    xxlOn_
+    xlOn_
+    ylOn_
     xtOn_
     ytOn_
     yytOn_
@@ -359,9 +367,9 @@ methods(Static)
         P={...
             %- FIGURE
            'bTest',false,bBE;
-           'bYY',[],'';
-           'bZ',[],'';
-           'bC',[],'';
+           'yyOn',[],'';
+           'zOn',[],'';
+           'cOn',[],'';
            'bHold',false,'';
            'bgColor',[1 1 1],'';
            'bSelectAll',false,'';
@@ -378,11 +386,11 @@ methods(Static)
            'yyedge',[1 1],bN;
 
            %% By
-           'xBy',true,bB;
-           'yBy',true,bB;
-           'xxBy',true,bB;
-           'yyBy',true,bB;
-           'cBy',true,bB;
+           'xlBy',true,bB;
+           'ylBy',true,bB;
+           'xxlBy',true,bB;
+           'yylBy',true,bB;
+           'clBy',true,bB;
            %
            'xtBy',[],bBE;
            'ytBy',[],bBE;
@@ -391,11 +399,11 @@ methods(Static)
            'ctBy',[],bBE;
 
            %% Ctr
-           'xCtr',true,bB;
-           'yCtr',true,bB;
-           'xxCtr',true,bB;
-           'yyCtr',true,bB;
-           'cCtr',true,bB;
+           'xlCtr',true,bB;
+           'ylCtr',true,bB;
+           'xxlCtr',true,bB;
+           'yylCtr',true,bB;
+           'clCtr',true,bB;
            %
            'xtCtr',[],bBE;
            'ytCtr',[],bBE;
@@ -407,48 +415,50 @@ methods(Static)
            'iMargin',[],'';
            'oMargin',[],'';
 
-           'uMargin',1,bN;
-           'sMargin',1,bN;
+           'ulMargin',1,bN;
+           'slMargin',1,bN;
            %
-           'tMargin',1,bN;
-           'bMargin',1,bN;
-           'lMargin',1,bN;
-           'rMargin',1,bN;
+           'tlMargin',1,bN;
+           'blMargin',1,bN;
+           'llMargin',1,bN;
+           'rlMargin',1,bN;
            %
-           'xMargin',1,bN;
-           'yMargin',1,bN;
-           'yyMargin',1,bN;
-           'xxMargin',1,bN;
-           'cMargin',1,bN;
+           'xlMargin',1,bN;
+           'ylMargin',1,bN;
+           'yylMargin',1,bN;
+           'xxlMargin',1,bN;
+           'clMargin',1,bN;
             %
            'xtMargin',1,bN;
            'ytMargin',1,bN;
            'yytMargin',1,bN;
            'ztMargin',1,bN;
            'ctMargin',1,bN;
+           %
+           'cMargin',.5,bN;
 
 
            % RM?
            'tMarginB',0,bN;
            'rMarginB',0,bN;
-           'xxMarginB',0,bN;
+           'xxlMarginB',0,bN;
 
            %- Labels
            %%  Flags
-           'sOn',false,bB;
-           'uOn',false,bB;
+           'slOn',false,bB;
+           'ulOn',false,bB;
            %
-           'lOn',[],bB;
-           'rOn',[],bB;
-           'tOn',[],bB;
-           'bOn',[],bB;
+           'llOn',[],bB;
+           'rlOn',[],bB;
+           'tlOn',[],bB;
+           'blOn',[],bB;
            %
-           'xOn',[],bB;
-           'yOn',[],bB;
-           'xxOn',[],bB;
-           'yyOn',[],bB;
-           'zOn',[],bB;
-           'cOn',[],bB;
+           'xlOn',[],bB;
+           'ylOn',[],bB;
+           'xxlOn',[],bB;
+           'yylOn',[],bB;
+           'zlOn',[],bB;
+           'clOn',[],bB;
            %
            'xtOn',true,bB;
            'ytOn',true,bB;
@@ -457,28 +467,28 @@ methods(Static)
            'ctOn',[],bB;
 
            %% txt
-           'sTxt',[],'';
-           'uTxt',[],'';
+           'slTxt',[],'';
+           'ulTxt',[],'';
            %
-           'lTxt' ,[],'';
-           'rTxt' ,[],'';
-           'tTxt' ,[],'';
-           'bTxt' ,[],'';
+           'llTxt' ,[],'';
+           'rlTxt' ,[],'';
+           'tlTxt' ,[],'';
+           'blTxt' ,[],'';
            %
-           'xTxt' ,[],'';
-           'yTxt' ,[],'';
-           'xxTxt',[],'';
-           'yyTxt',[],'';
-           'cTxt',[],'';
+           'xlTxt' ,[],'';
+           'ylTxt' ,[],'';
+           'xxlTxt',[],'';
+           'yylTxt',[],'';
+           'clTxt',[],'';
 
            %% base txt
-           'lTxtB',[],'';
-           'rTxtB',[],'';
-           'tTxtB',[],'';
-           'bTxtB',[],'';
+           'llTxtB',[],'';
+           'rlTxtB',[],'';
+           'tlTxtB',[],'';
+           'blTxtB',[],'';
 
            %% fontsize
-           'sFontSize',[],'';
+           'slFontSize',[],'';
            'uFontSize',[],'';
            'tFontSize',[],'';
            'bFontSize',[],'';
@@ -497,6 +507,10 @@ methods(Static)
            %% txt loc
            'sLoc','top','';
            'uLoc','bottom','';
+           %
+           'clLoc','top','';
+           'cLoc','right','';
+           'ctLoc','top','';
 
            %- plot axes
            'lineWidth',2,'';
@@ -617,9 +631,9 @@ methods
         o=ones(obj.RC);
 
         T=struct();
-        T.xBy=z;
-        T.yBy=z;
-        T.yyBy=z;
+        T.xlBy=z;
+        T.ylBy=z;
+        T.yylBy=z;
         [X,Y]=meshgrid(1:obj.RC(2),1:obj.RC(1));
 
 
@@ -628,20 +642,33 @@ methods
         yyedge=obj.yyedge;
 
         % By
-        T.xBy(xedge(2),:)=true;
-        T.yBy(:,yedge(1))=true;
-        T.yyBy(:,yyedge(1))=true;
-        T.xBy=  T.xBy  & (X >= obj.xedge(1));
-        T.yBy=  T.yBy  & (Y >= obj.yedge(2));
-        T.yyBy= T.yyBy & (Y >= obj.yyedge(2));
-        T.xBy=flipud(T.xBy);
-        T.yyBy=fliplr(T.yyBy);
-        T.cBy=T.yyBy;
+        T.xlBy(xedge(2),:)=true;
+        T.ylBy(:,yedge(1))=true;
+        T.yylBy(:,yyedge(1))=true;
+        T.xlBy=  T.xlBy  & (X >= obj.xedge(1));
+        T.ylBy=  T.ylBy  & (Y >= obj.yedge(2));
+        T.yylBy= T.yylBy & (Y >= obj.yyedge(2));
+        T.xxlBy=T.xlBy;
+        T.xlBy=flipud(T.xlBy);
+        T.yylBy=fliplr(T.yylBy);
+        T.clBy=T.yylBy;
 
-        T.xtBy=T.xBy;
-        T.ytBy=T.yBy;
-        T.yytBy=T.yyBy;
-        T.ctBy=T.cBy;
+        switch obj.cLoc
+        case 'top'
+            T.clBy=T.xxlBy;
+        case 'bottom'
+            T.clBy=T.xlBy;
+        case 'left'
+            T.clBy=T.ylBy;
+        case 'right'
+            T.clBy=T.yylBy;
+        end
+
+        T.xtBy=T.xlBy;
+        T.xxtBy=T.xxlBy;
+        T.ytBy=T.ylBy;
+        T.yytBy=T.yylBy;
+        T.ctBy=T.clBy;
 
         % XXX
         bYMod=true;
@@ -650,29 +677,40 @@ methods
         % Ctr
         r=mod(obj.RC,2)==0;
         if bYMod || r(1)
-            T.yCtr=Y==obj.RC(1);
-            T.yyCtr=Y==obj.RC(1);
+            T.ylCtr=Y==obj.RC(1);
+            T.yylCtr=Y==obj.RC(1);
         else
-            T.yCtr=Y==ceil(obj.RC(1)/2);
-            T.yyCtr=Y==ceil(obj.RC(1)/2);
+            T.ylCtr=Y==ceil(obj.RC(1)/2);
+            T.yylCtr=Y==ceil(obj.RC(1)/2);
         end
-        T.cCtr=Y==1;
+        switch obj.cLoc
+        case 'top'
+            T.clCtr=X==obj.RC(end);
+        case 'bottom'
+            T.clCtr=X==obj.RC(end);
+        case 'left'
+            T.clCtr=Y==1;
+        case 'right'
+            T.clCtr=Y==1;
+        end 
         if bXMod || r(2)
-            T.xCtr=X==1;
+            T.xlCtr=X==1;
         else
-            T.xCtr=X==ceil(obj.RC(2)/2);
+            T.xlCtr=X==ceil(obj.RC(2)/2);
         end
-        T.xtCtr=T.xCtr;
-        T.ytCtr=T.yCtr;
-        T.yytCtr=T.yyCtr;
-        T.ctCtr=T.cCtr;
+        T.xtCtr=T.xlCtr;
+        T.xxtCtr=T.xlCtr;
+        T.xxlCtr=T.xlCtr;
+        T.ytCtr=T.ylCtr;
+        T.yytCtr=T.yylCtr;
+        T.ctCtr=T.clCtr;
 
 
         obj.D=struct();
-        flds={'x','y','yy','c',...
-              'xt','yt','yyt','ct'};
-        eind=[2 1 1 1 ...
-              2 1 1 1];
+        flds={'xl','xxl','yl','yyl','cl',...
+              'xt','xxt','yt','yyt','ct'};
+        eind=[2 2 1 1 1 ...
+              2 2 1 1 1];
 
         for i = 1:length(flds)
             fld=flds{i};
@@ -785,11 +823,11 @@ methods(Access=protected)
             yyt=[];
         end
         if ~isempty(obj.ct)
-            crgs=[cargs 'Ticks',obj.yyt,'TicksMode','manual'];
-            cBlnk=repmat({''},1,numel(obj.yyt));
-            ct=cellfun(@num2str,num2cell(obj.yyt));
+            crgs=[cargs 'Ticks',obj.ct,'TicksMode','manual'];
+            cBlnk=repmat({''},1,numel(obj.ct));
+            ct=cellfun(@num2str,num2cell(obj.ct));
         elseif bC_
-            ct=obj.cTxt;
+            ct=obj.ctTxt;
         else
             ct=[];
         end
@@ -830,9 +868,6 @@ methods(Access=protected)
             elseif D.xtOn_
                 sargs=[sargs,'XTickLabelMode','manual','XTickLabel',{[]}];
             end
-            % cTxt
-
-
 
             obj.ax{i}=axes(...
                            'Units','normalized',...
@@ -857,24 +892,70 @@ methods(Access=protected)
             sargs={};
             % ctTxt
             if bC
+                % ticklabels
                 if D.ctOn_ && D.ctOn(i)
-                    if ~isempty(xt)
+                    if ~isempty(ct)
                         sargs=[sargs,'TickLabelsMode','manual','TickLabels',ct];
                     end
-                    if D.xtEven
-                    end
-                elseif D.xtOn_
+                elseif D.ctOn_
                     sargs=[sargs,'TickLabelsMode','manual','XTickLabels',{[]}];
                 end
+                % labels
 
-                if (D.ctOn_ && D.ctOn(i)) || (D.cOn_ && D.cOn(i))
+
+                if (D.ctOn_ && D.ctOn(i)) || (D.clOn_ && D.clOn(i))
                     obj.axc{i}=colorbar(...
                         'AxisLocation','in',...
                         'Position',obj.Pos.c(i,:),...
+                        'Location','manual',...
+                        sargs{:}, ...
                         cargs{:}...
                     );
-                    obj.axc{i}.YAxisLocation='right';
+
+                    if D.clOn_ && D.clOn(i)
+                        if iscell(obj.clTxt)
+                            cl=obj.clTxt{i};
+                        else
+                            cl=obj.clTxt;
+                        end
+                        obj.axc{i}.Label.String=cl;
+                        switch obj.cLoc
+                        case 'left'
+                            obj.axc{i}.YAxisLocation='left';
+                        case 'right'
+                            obj.axc{i}.YAxisLocation='right';
+                        case 'top'
+                            obj.axc{i}.Orientation='horizontal';
+                            obj.axc{i}.XAxisLocation='top';
+                        case 'bottom'
+                            obj.axc{i}.Orientation='horizontal';
+                            obj.axc{i}.XAxisLocation='bottom';
+                        end
+
+                        switch obj.clLoc
+                        case 'left'
+                            obj.axc{i}.Label.Rotation = 270;
+                            obj.axc{i}.Label.Position = [-1 -.1];
+                            obj.axc{i}.Label.VerticalAlignment = 'bottom';
+                            obj.axc{i}.Label.HorizontalAlignment = 'left';
+                        case 'right'
+                            obj.axc{i}.Label.Rotation = 270;
+                            obj.axc{i}.Label.VerticalAlignment = 'bottom';
+                        case 'top'
+                            obj.axc{i}.Label.Rotation = 0;
+                            obj.axc{i}.Label.Position = [.5 1];
+                            obj.axc{i}.Label.VerticalAlignment = 'bottom';
+                            obj.axc{i}.Label.HorizontalAlignment = 'center';
+                        case 'bottom'
+                            obj.axc{i}.Label.Rotation = 0;
+                            obj.axc{i}.Label.Position = [.5 -.1];
+                            obj.axc{i}.Label.VerticalAlignment = 'top';
+                            obj.axc{i}.Label.HorizontalAlignment = 'center';
+                        end
+                    end
+
                 end
+
             end
 
             %% right
@@ -1030,17 +1111,17 @@ end
 methods
 %- GETTERS
     function out=get.bYY_(obj)
-        if ~isempty(obj.bYY)
-            out=obj.bYY;
+        if ~isempty(obj.yyOn)
+            out=obj.yyOn;
         else
-            out=obj.get_b('yy') || obj.get_b('yyt');
+            out=obj.get_b('yyl') || obj.get_b('yyt');
         end
     end
     function out=get.bC_(obj)
-        if ~isempty(obj.bC)
-            out=obj.bC;
+        if ~isempty(obj.cOn)
+            out=obj.cOn;
         else
-            out=obj.get_b('c') || obj.get_b('ct');
+            out=obj.get_b('cl') || obj.get_b('ct');
         end
     end
     function out=get.bZ_(obj)
@@ -1048,10 +1129,10 @@ methods
         % need also to create z lable properties
         out=false; % XXX
 
-        if ~isempty(obj.bZ)
-            out=obj.bZ;
+        if ~isempty(obj.zOn)
+            out=obj.zOn;
         else
-            out=obj.get_b('z') || obj.get_b('zt');
+            out=obj.get_b('zl') || obj.get_b('zt');
         end
     end
     function sel(obj,varargin)
@@ -1184,8 +1265,22 @@ methods(Access=protected)
         P.iT(2)=P.iT(2)+oMN(4);
 
         P.c=P.i;
-        P.c(:,1)=P.c(:,1)+P.c(:,3)+obj.m.yyt;
-        P.c(:,3)=obj.m.c;
+        switch obj.cLoc
+        case 'top'
+            P.c(:,2)=P.c(:,2)+P.c(:,4)+obj.m.xxt;
+            P.c(:,4)=obj.m.c_t;
+        case 'bottom'
+            P.c(:,2)=P.c(:,2)-obj.m.c_b;
+            %P.c(:,2)=P.c(:,2)-obj.m.c_b-obj.m.xt;
+            P.c(:,4)=obj.m.c_b;
+        case 'left'
+            P.c(:,1)=P.c(:,1)-obj.m.c_l;
+            %P.c(:,1)=P.c(:,1)-obj.m.c_l-obj.m.yt;
+            P.c(:,3)=obj.m.c_l;
+        case 'right'
+            P.c(:,1)=P.c(:,1)+P.c(:,3)+obj.m.yyt;
+            P.c(:,3)=obj.m.c_r;
+        end
         obj.Pos=P;
 
         iFWH=fWH.*obj.Pos.iT(3:4);
@@ -1409,6 +1504,11 @@ methods(Hidden)
         out=obj.propFun('Ctr',name);
     end
     function out=propFun(obj,ffld,name,bRecurse)
+        name=obj.parse_name(name);
+        if isempty(name)
+            out=false;
+            return
+        end
         if ~any(strcmp(name(1),{'x','y','z','c'}))
             out=[];
             return
@@ -1425,33 +1525,39 @@ methods(Hidden)
         end
 
         % base fld
-        bfld=strrep(name,'t','');
+        % XXX
+        if strcmp(name,'t')
+            bfld='tl';
+        else
+            bfld=regexprep(name,'[tl]$','');
+        end
         tfld=[bfld 't'];
+        lfld=[bfld 'l'];
 
         % eval fld
-        bFld=[bfld ffld];
+        lFld=[bfld 'l' ffld];
         tFld=[bfld 't' ffld];
 
         if ~isempty((nffld))
-            nbFld=[bfld nffld];
+            nlFld=[bfld 'l' nffld];
             ntFld=[bfld 't' nffld];
         end
 
         % actual
         if numel(name) > 1 && endsWith(name,'t');
             fld=tfld;
-            ofld=bFld;
+            ofld=lFld;
 
             Fld=tFld;
-            oFld=bFld;
+            oFld=lFld;
             nFld=ntFld;
         else
-            fld=bfld;
+            fld=lfld;
             ofld=tFld;
 
-            Fld=bFld;
+            Fld=lFld;
             oFld=tFld;
-            nFld=nbFld;
+            nFld=nlFld;
         end
 
         out=obj.(Fld);
@@ -1475,6 +1581,7 @@ methods(Hidden)
         if ~isempty(out); return; end
     end
     function out=get_fontSize(obj,name)
+        name=obj.parse_name(name);
         if strcmp(name,'oM')
             ffld='fontSize';
         elseif strcmp(name,'iM')
@@ -1488,11 +1595,11 @@ methods(Hidden)
         end
 
         switch name
-        case {'s','u'}
+        case {'sl','ul'}
             out=obj.SUFontSize;
-        case {'l','r','t','b'}
+        case {'ll','rl','tl','bl'}
             out=obj.RCFontSize;
-        case {'x','y','xx','yy'}
+        case {'xl','yl','xxl','yyl'}
             out=obj.XYFontSize;
         case {'xt','yt','xxt','yyt'}
             out=obj.ticksFontSize;
@@ -1503,7 +1610,23 @@ methods(Hidden)
             out=obj.fontSize;
         end
     end
+    function name=parse_name(obj,name);
+        if startsWith(name,{'c_','ct_','cl_'})
+            [fld,loc]=strtok(name,'_');
+            if loc(2)==obj.([fld 'Loc'])(1);
+            %if loc(2)==obj.cLoc(1);
+                name=fld;
+            else
+                name='';
+            end
+        end
+    end
     function out=get_b(obj,name)
+        name=obj.parse_name(name);
+        if isempty(name)
+            out=false;
+            return
+        end
         bfld=[ name 'On'];
         if numel(name) > 1 && endsWith(name,'t')
             if strcmp(name,'yt') && obj.iMargin(1) > 0
@@ -1530,6 +1653,7 @@ methods(Hidden)
         end
     end
     function iM=get_margin(obj,fld,bRaw)
+        fld=obj.parse_name(fld);
         if nargin < 3  || isempty(bRaw)
             bRaw=false;
         end
@@ -1583,27 +1707,36 @@ methods(Access=protected)
         %      'x';'y';'xx';'yy';...
         %      't';'b';'l';'r';...
         %      's';'u'};
-        flds={...
-              'oT';'s';'t';'xx';'xxt';'iT';... % GOOD
-              'oR';'r';'yy';'ct';'c';'yyt';'iR';... % GOOD
-              'iB';'xt';'x';'b';'u';'oB';...  % GOOD
-              'iL';'yt';'y';'l';'oL';...
-        };
+        %
+        c={'c';'ct';'cl'};
+        cr=strcat(c,'_r');
+        cl=strcat(c,'_l');
+        cb=strcat(c,'_b');
+        ct=strcat(c,'_t');
+        C=[cr; cl; cb; ct];
+        flds=[...
+              'oT';'sl';'tl';'xxl';ct;'xxt';'iT';... % GOOD
+              'oR';'rl';'yyl';cr;'yyt';'iR';... % GOOD
+              'iB';cb;'xt';'xl';'bl';'ul';'oB';...  % GOOD
+              'iL';'yt';cl;'yl';'ll';'oL';...
+        ];
 
               %'yyt';'yy';'r';...
         N=numel(flds);
 
         % by flds
         bFlds=cell(N,1);
-        byFlds={'xt','yt','xxt','yyt','ct'...
-                'x','y','xx','yy','c'};
+        byFlds=[C','xt','yt','xxt','yyt',...
+                'xl','yl','xxl','yyl'];
         bBy=ismember(flds,byFlds);
 
 
         % rev flds
         rFlds=cell(N,1);
-        revFlds={'iL','yL','oL','iL','y','yy','l','r','c'};
-        nRevFlds={'yt','yyt','ct'};
+        revFlds=['iL','yL','oL','iL','yl','yyl','ll','rl'];
+        %nRevFlds=[ct' cb' cr' cl' 'yt','yyt','ct'];
+        nRevFlds=['yt','yyt','ct'];
+
         bRev=ismember(flds,revFlds);
         bNRev=ismember(flds,nRevFlds);
         rFlds(bRev)={'f'};
@@ -1612,10 +1745,10 @@ methods(Access=protected)
 
         % loc flds
         lFlds=cell(N,1);
-        topFlds={'oT','iT','xxt','xx','t','s'};
-        botFlds={'oB','iB','xt','x','b','u'};
-        leftFlds={'oL','iL','yt','y','l'};
-        rightFlds={'oR','iR','yyt','yy','r','ct','c'};
+        topFlds=[ct' 'oT','iT','xxt','xxl','tl','sl'];
+        botFlds=[cb' 'oB','iB','xt','xl','bl','ul'];
+        leftFlds=[cl' 'oL','iL','yt','yl','ll'];
+        rightFlds=[cr' 'oR','iR','yyt','yyl','rl','c','ct','cl'];
         lFlds(ismember(flds,topFlds))={'T'};
         lFlds(ismember(flds,botFlds))={'B'};
         lFlds(ismember(flds,leftFlds))={'L'};
@@ -1677,6 +1810,8 @@ methods(Access=protected)
         obj.AFlds=cell(N,1);
         for i = 1:N
             fld=obj.flds{i};
+            %fld=obj.parse_name(obj.flds{i}));
+
             if startsWith(fld,{'i','o'})
                 ;
             elseif obj.get_b(fld)

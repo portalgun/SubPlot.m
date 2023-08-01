@@ -41,26 +41,29 @@ methods
 
         %% CONSTRUCT
         F={};
-        flds={'s' 'u'};
+        flds={'sl' 'ul'};
         for i = 1:length(flds)
             fld=flds{i};
-            fldf=[fld 'L'];
+            fldf=fld;
+            fldf(end)=upper(fldf(end));
             obj.(fldf)=SubLabels(obj,fld,'sup');
         end
         F=[F flds];
 
-        flds={'l' 'r','t','b'};
+        flds={'ll' 'rl','tl','bl'};
         for i = 1:length(flds)
             fld=flds{i};
-            fldf=[fld 'L'];
+            fldf=fld;
+            fldf(end)=upper(fldf(end));
             obj.(fldf)=SubLabels(obj,fld,'rc');
         end
         F=[F flds];
 
-        flds={'x' 'y','xx','yy'};
+        flds={'xl' 'yl','xxl','yyl'};
         for i = 1:length(flds)
             fld=flds{i};
-            fldf=[fld 'L'];
+            fldf=fld;
+            fldf(end)=upper(fldf(end));
             obj.(fldf)=SubLabels(obj,fld,'xy');
         end
         obj.lblFlds=[F flds];
@@ -168,7 +171,8 @@ methods
 %- UPDATE
     function AL_set_position(obj)
         for i = 1:length(obj.lblFlds);
-            fld=[obj.lblFlds{i} 'L'];
+            fld=[obj.lblFlds{i}];
+            fld(end)=upper(fld(end));
 
             obj.(fld).set_text();
             obj.(fld).set_position();

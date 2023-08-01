@@ -23,93 +23,70 @@ methods(Static)
             'iMargin',iMargin;
             'oMargin',oMargin;
             ...
-            'bYY',true;
-            'bZ',true;
+            'yyOn',true;
+            'zOn',true;
+            'cOn',true;
             ...
             %% X
-            'xOn',bXY(1);
-            'xBy',true;
-            'xCtr',true;
-            'xMargin',XYMargin(1);
-            'xTxt','xTxt';
+            'xlOn',bXY(1);
+            'xlBy',true;
+            'xlCtr',true;
+            'xlCtr',XYMargin(1);
+            'xlTxt','xlTxt';
             %% Y
-            'yOn',bXY(2);
-            'yBy',true;
-            'yCtr',true;
-            'yMargin',XYMargin(2);
-            'yTxt','yTxt';
+            'ylOn',bXY(2);
+            'ylBy',true;
+            'ylCtr',true;
+            'ylCtr',XYMargin(2);
+            'ylTxt','ylTxt';
             %% XX
-            'xxOn',bXY(3);
-            'xxBy',true;
-            'xxCtr',true;
-            'xxMargin',XYMargin(3);
-            'xxTxt','xxTxt';
-            %% YY
-            'yyOn',bXY(4);
-            'yyBy',true;
-            'yyCtr',true;
-            'yyMargin',XYMargin(4);
-            'yyTxt','yyTxt';
-            ...
-            %% C
-            'cOn',bXY(5);
-            'cBy',true;
-            'cCtr',true;
-            'cMargin',XYMargin(5);
-            'cTxt','cTxt';
-            ...
-            %% XTicks
-            'xtOn',true;
-            'xtBy',false;
-            'xtCtr',true;
-            'xtMargin',1;
-            %% YTTicks
-            'ytOn',true;
-            'ytBy',true;
-            'ytCtr',true;
-            'ytMargin',3;
-            %% YTTicks
-            'yytOn',false;
-            'yytBy',true;
-            'yytCtr',true;
+            'xxlOn',bXY(3);
+            'xxlBy',true;
+            'xxlCtr',true;
+            'xxlCtr',XYMargin(3);
+            'xxlTxt','xxlTxt';
             'yytMargin',3;
             %% CTicks
             'ctOn',true;
             'ctBy',true;
-            'ctCtr',false;
+            'ctCtr',true;
             'ctMargin',3;
+            'ctLoc','right';
+            %% C
+            'cLoc','left';
+            'cMargin',.5;
             ...
             %% L
             % XXX
-            'lOn',bRC(1);
-            'lMargin',RCMargin(1);
-            'lTxtB','lTxtB';
-            'lTxt',{'lTxt 1','2','3','4','5'};
+            'llOn',bRC(1);
+            'llMargin',RCMargin(1);
+            'llTxtB','lTxtB';
+            'llTxt',{'lTxt 1','2','3','4','5'};
             %% R
             % XXX
-            'rOn',bRC(2);
-            'rMargin',RCMargin(2);
-            'rTxtB','rTxtB';
-            'rTxt',{'rTxt 1','2','3','4','5'};
+            'rlOn',bRC(2);
+            'rlMargin',RCMargin(2);
+            'rlTxtB','rTxtB';
+            'rlTxt',{'rTxt 1','2','3','4','5'};
             %% B
-            'tOn',bRC(3);
-            'tMargin',RCMargin(3);
-            'tTxtB','tTxtB';
-            'tTxt',{'1','2','3','4','5','6','7','8'};
+            'tlOn',bRC(3);
+            'tlMargin',RCMargin(3);
+            'tlTxtB','tTxtB';
+            'tlTxt',{'1','2','3','4','5','6','7','8'};
             %% T
-            'bOn',bRC(4);
-            'bMargin',RCMargin(4);
-            'bTxtB','bTxtB';
-            'bTxt',{'1','2','3','4','5','6','7','8'};
+            'blOn',bRC(4);
+            'blMargin',RCMargin(4);
+            'blTxtB','bTxtB';
+            'blTxt',{'1','2','3','4','5','6','7','8'};
             ...
             %% S
-            'sOn',bSu(1);
-            'sMargin',suMargin(1);
-            'sTxt','sTxt';
+            'slOn',bSu(1);
+            'slMargin',suMargin(1);
+            'slTxt','slTxt';
             %% U
-            'uOn',bSu(2);
-            'uMargin',suMargin(2);
-            'uTxt','uTxt';
+            'ulOn',bSu(2);
+            'ulMargin',suMargin(2);
+            'ulTxt','ulTxt';
         };
         Args=Args';
         SP=SubPlot(Siz,Args{:});

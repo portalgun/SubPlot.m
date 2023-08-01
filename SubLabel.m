@@ -66,13 +66,13 @@ methods
         end
 
         switch obj.name
-        case {'s','t','xx','xxlabel'}
+        case {'sl','tl','xxl','xxlabel'}
             loc='top';
-        case {'u','b','x','xlabel'}
+        case {'ul','bl','xl','xlabel'}
             loc='bottom';
-        case {'r','yy'}
+        case {'rl','yyl'}
             loc='right';
-        case {'l','y'}
+        case {'ll','yl'}
             loc='left';
         otherwise
             obj.name

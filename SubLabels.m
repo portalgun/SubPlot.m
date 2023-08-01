@@ -69,7 +69,7 @@ methods
     function parse(obj)
 
         switch obj.name
-        case {'u','s'}
+        case {'ul','sl'}
             obj.bSup=true;
             obj.szdim=0;
             obj.dims=[2 1];
@@ -77,13 +77,13 @@ methods
             obj.szFld='iC';
             obj.ctrsFld='iCT';
             obj.ctrFld='iCT';
-        case {'t','b','x','xx'}
+        case {'tl','bl','xl','xxl'}
             obj.szdim=2;
             obj.dims=[2 1];
             obj.szFld='iC';;
             obj.ctrsFld='iC';
             obj.ctrFld='iCTm';
-        case {'l','r','y','yy'}
+        case {'ll','rl','yl','yyl'}
             obj.szdim=1;
             obj.dims=[1 2];
             obj.szFld='iR';

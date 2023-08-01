@@ -99,7 +99,7 @@ methods
         case 'right'
             va='bottom';
             ha='center';
-            tpos=[0.01 0.5];
+            tpos=[0.00 0.5];
             rot=270;
         case 'top'
             ha='Center';
@@ -180,7 +180,7 @@ methods
             case 1
                 va='top';
                 ha='left';
-                tpos=[1 0];
+                tpos=[.9 0];
             case 2
                 va='top';
                 ha='center';
